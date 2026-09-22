@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts (the actual firmware)
+*.img
+*.img.gz
+*.bin
+
+# Local credentials (NEVER commit) — see AGENTS.md
+credentials/
