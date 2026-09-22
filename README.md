@@ -259,6 +259,41 @@ CI 输出与开箱即用的 V50 镜像之间还差：
 
 ---
 
+## 性能优化 / Performance
+
+为节省 CI 构建时间，仓库做了三层缓存：
+
+1. **OpenWrt 源码下载缓存**（`openwrt/dl/`）——跨 build 复用所有 `make` 下载的 tarball
+2. **ccache 跨 build 缓存**（`~/.ccache`，2 GB）——C/C++ 编译缓存。`CONFIG_DEVEL_CCACHE=y` 已默认启用
+3. **GitHub Actions 缓存**（`actions/cache@v4`）——上面两个目录都被 key 到 `openwrt_version`，同版本 rebuild 可复用
+
+实际收益（ubuntu-22.04 runner）：
+
+| 场景 | 首 build | 同版本再 build |
+|------|---------|---------------|
+| 全量 build（默认 config + frpc + aurora + passwall2） | ~2-4 小时 | ~1.5-3 小时 |
+| 只换 `add_packages`（源码不变） | 同上 | ~30-60 分钟（ccache 命中） |
+
+**额外时间节约**：如果你**不介意**用预编译的 Aurora 主题（牺牲 5-10 分钟本地编译 vs 0 分钟远程下载），eamonxg 提供了一个签名的 feed：
+
+```bash
+# 在已运行的 V50 镜像上（默认 config 不带 aurora 的情况下）
+wget -qO /etc/apk/keys/eamonxg.pem https://openwrt.eamonxg.fun/eamonxg.pem
+echo "https://openwrt.eamonxg.fun/snapshots/apk/packages.adb" \
+    >> /etc/apk/repositories.d/customfeeds.list
+apk update
+apk add luci-theme-aurora   # 或 luci-theme-shadcn / luci-app-aurora-config
+```
+
+Feed 详情：[openwrt.eamonxg.fun](https://openwrt.eamonxg.fun/)（eamonxg 同时维护 `luci-theme-aurora`）。
+
+要进一步省时，构建时把 aurora 留空：
+
+- workflow_dispatch → `add_packages` 留空 → 镜像不含 aurora（编译更快）
+- 设备开机后通过上述命令从 eamonxg feed 安装
+
+---
+
 ## 致谢与上游引用 / Credits & upstream
 
 本项目编译的 OpenWrt 镜像中的所有组件均来自上游开源项目，本仓库仅做"配方固化 + CI 自动化"。下列项目在此特别致谢——**默认 config 已启用的标 ✅，需手动加包启用的标 ➕**：

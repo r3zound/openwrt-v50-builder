@@ -72,7 +72,29 @@ jobs:
             git wget unzip rsync subversion gettext \
             libncurses-dev libssl-dev zlib1g-dev \
             python3 python3-setuptools python3-pyelftools \
-            xxd zstd file
+            xxd zstd file ccache
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ccache-${{ inputs.openwrt_version }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-${{ inputs.openwrt_version }}-
+            ccache-
+
+      - name: Configure ccache
+        run: |
+          echo "=== ccache config ==="
+          ccache --version
+          ccache --show-config
+          ccache --show-stats
+          mkdir -p ~/.ccache
+          # OpenWrt picks up ccache via CONFIG_DEVEL_CCACHE; we also
+          # pre-set CC so the build shell uses it directly.
+          echo "CCACHE_DIR=$HOME/.ccache" >> "$GITHUB_ENV"
+          echo "CCACHE_MAXSIZE=2G" >> "$GITHUB_ENV"
+          echo "CCACHE_COMPRESS=1" >> "$GITHUB_ENV"
 
       - name: Cache OpenWrt download directory
         uses: actions/cache@v4
