@@ -99,23 +99,78 @@
 
 ## 编译配方 / Default config
 
-`config/default.config` 是从 `ZTE MU3351 / V50` 参考设备镜像里摘取的编译配置：
+`config/default.config` 是从构建服务器 `/home/lg/openwrt-build/openwrt_V5/.config` 摘取的 OpenWrt 编译配置：
 
 - **大小**：287 KB
 - **已启用包**：239 个（`CONFIG_PACKAGE_*=y`）
 - **目标**：`armsr/armv8 DEVICE_generic`
-- **来源**：`/home/lg/openwrt-build/openwrt_V5/.config`（构建服务器上）
+- **可选未启用包**：~4500 个（commented `CONFIG_PACKAGE_* is not set`）
 
-包含的关键组件：
+⚠️ **重要**：本 default.config 是**精简版**——只包含 OpenWrt 主仓库 + 标准 feeds 的包。**不含**第三方应用（PassWall2、UA3F、nikki、hiddify-core、mihomo-alpha、Zapret2 等）。如需这些，需要：
+- workflow_dispatch `add_packages` 加上对应名字，或
+- 在 `config/default.config` 末尾追加 `CONFIG_PACKAGE_xxx=y`
+
+### 关键组件概览
 
 - **核心系统**：`base-files`, `busybox`, `procd`, `uci`, `dropbear`, `dnsmasq-full`, `firewall4`
-- **LuCI 界面**：`luci-mod-admin-full` + [`luci-theme-aurora`](https://github.com/eamonxg/luci-theme-aurora) + `luci-theme-bootstrap` 双主题 + 全中文包
-- **代理反审查**：`PassWall2`, `UA3F`, `nikki + hiddify-core`, `mihomo-alpha`, `v2ray-geoip/geosite`
-- **Zapret2**（手动安装在 `/opt/zapret2/`，**默认 config 不含**，需要 post-process 注入）
-- **ZTE 定制**（手动写在 `/etc/rc.local`，**默认 config 不含**，需要 post-process 注入）：
-  - 设备型号伪装 `ZTE MU3351 / V50`
-  - `br-lan` MAC 固定 `02:00:00:00:88:01`
-  - 首次开机 `resize2fs /dev/vda` 自动扩容
+- **LuCI 界面**：`luci-mod-admin-full` + `luci-theme-bootstrap` + `luci-light` 主题
+- **网络/IPv6**：`odhcp6c`, `odhcpd-ipv6only`, `luci-proto-ipv6`, `luci-proto-ppp`, `ppp-mod-pppoe`
+- **LuCI 应用**：`luci-app-firewall`, `luci-app-frpc`, `luci-app-package-manager`, `luci-app-attendedsysupgrade`
+- **路由数据**：`v2ray-geoip`, `v2ray-geosite`（**没有** PassWall2 client 配套）
+- **语言**：当前**未启用任何 luci-i18n**（系统默认英文界面）
+
+---
+
+## 内置插件索引 / Bundled package index
+
+按类目整理 `config/default.config` 中所有 239 个启用包（实际清单会随 OpenWrt 版本漂移，以仓库中的 `config/default.config` 为准）：
+
+### 核心 / Core (11)
+`base-files`, `busybox`, `procd`, `uci`, `dropbear`, `firewall4`, `fstools`, `rpcd`, `ubox`, `ubus`, `uhttpd`
+
+### LuCI 基础 / LuCI base (12)
+`luci-base`, `luci`, `luci-compat`, `luci-lib-base`, `luci-lib-ip`, `luci-lib-jsonc`, `luci-lib-nixio`, `luci-lib-uqr`, `luci-light`, `luci-lua-runtime`, `luci-ssl`, `cgi-io`
+
+### LuCI 模块 / LuCI modules (4)
+`luci-mod-admin-full`, `luci-mod-network`, `luci-mod-status`, `luci-mod-system`
+
+### LuCI 协议 / LuCI protocols (2)
+`luci-proto-ipv6`, `luci-proto-ppp`
+
+### LuCI 应用 / LuCI apps (4)
+`luci-app-attendedsysupgrade`, `luci-app-firewall`, `luci-app-frpc`, `luci-app-package-manager`
+
+### LuCI 主题 / LuCI themes (1)
+`luci-theme-bootstrap`（如需 Aurora 主题，构建时 `add_packages=luci-theme-aurora`，见下方"致谢与上游引用"）
+
+### 通用库 / Libraries (36)
+`libc`, `libgcc`, `libpthread`, `librt`, `liblua`, `libubus`, `libuci`, `libubox`, `libblobmsg-json`, `libjson-c`, `libjson-script`, `libnl-tiny`, `libmnl`, `libnftnl`, `libiwinfo`, `libiwinfo-data`, `libuclient`, `libustream-mbedtls`, `libcurl`, `libmbedtls`, `libnghttp2`, `liblucihttp`, `liblucihttp-lua`, `liblucihttp-ucode`, `libuuid`, `libblkid`, `libcomerr`, `libe2p`, `libext2fs`, `libf2fs`, `libss`, `libsmartcols`, `libyaml`, `libucode`, `libudebug`
+
+### 文件系统 / Filesystem (2)
+`blkid`, `e2fsprogs`（**注意**：resize2fs 在 OpenWrt 25.x 拆到 `e2fsprogs` 包内，未单列）
+
+### 防火墙 / Firewall (1)
+`nftables-json`
+
+### HTTP (1)
+`curl`
+
+### 系统工具 / System (1)
+`logd`
+
+### 网络与 PPP (3)
+`odhcp6c`, `odhcpd-ipv6only`, `ppp`, `ppp-mod-pppoe`, `kmod-ppp`, `kmod-pppoe`, `kmod-pppox`, `kmod-slhc`
+
+### 路由数据 / Routing data (2)
+`v2ray-geoip`, `v2ray-geosite`（**无配套 client**）
+
+### 杂项工具 / Misc utilities (60+)
+`apk-tools` (as `apk-mbedtls`), `coreutils`, `coreutils-base64/nohup/sleep/sort/timeout`, `ca-bundle`, `fwtool`, `getrandom`, `grub2-efi-arm`, `gzip`, `jansson`, `jshn`, `jsonfilter`, `lua`, `lyaml`, `mkf2fs`, `mtd`, `netifd`, `openwrt-keyring`, `owut`, `partx-utils`, `procd-seccomp`, `procd-ujail`, `px5g-mbedtls`, `rpcd-mod-file/iwinfo/luci/rpcsys/rrdns/ucode`, `u-boot-qemu_armv8`, `uclient-fetch`, `ucode`, `ucode-mod-fs/html/log/lua/math/ubus/uci/uclient/uloop`, `uhttpd-mod-ubus`, `unzip`, `urandom-seed`, `urngd`, `usign`, `yq`, `zlib`, `dnsmasq`, `frpc`, `knot-resolver_dnstap`, `TAR_BZIP2/GZIP/POSIX_ACL/XATTR/XZ/ZSTD`, `attendedsysupgrade-common`
+
+### 内核模块 / Kernel modules (96)
+96 个 `kmod-*` 包，包括：网络 PHY (`kmod-phy-*`, `kmod-mii`, `kmod-libphy`, `kmod-mdio-*`)、网卡驱动 (`kmod-stmmac-core`, `kmod-bcmgenet`, `kmod-mvneta`, `kmod-mvpp2`, `kmod-fsl-*`, `kmod-dwmac-*`, `kmod-atlantic`, `kmod-e1000e`, `kmod-vmxnet3`, `kmod-amazon-ena`, `kmod-octeontx2-net`, `kmod-renesas-net-avb`)、加密 (`kmod-crypto-*`)、防火墙 (`kmod-nf-*`, `kmod-nft-*`)、字符集 (`kmod-nls-*`)、RTC (`kmod-rtc-rx8025`, `kmod-pps`, `kmod-ptp`)、I²C/GPIO (`kmod-i2c-*`, `kmod-gpio-pca953x`)、看门狗 (`kmod-wdt-sp805`)、MACsec (`kmod-macsec`)、PPPoE (`kmod-pppoe`)、SFPMODEM (`kmod-sfp`) 等。
+
+> 想看完整 96 个 kmod-* 清单？看 [`config/default.config`](config/default.config) 用 `grep '^CONFIG_PACKAGE_kmod-'` 过滤。
 
 ---
 
@@ -202,14 +257,65 @@ CI 输出与开箱即用的 V50 镜像之间还差：
 
 ## 致谢与上游引用 / Credits & upstream
 
-本项目构建的 OpenWrt 镜像中的 LuCI 主题、第三方应用包均来自上游开源项目，本项目仅做"配方固化 + CI 自动化"工作。下列项目在此特别致谢：
+本项目编译的 OpenWrt 镜像中的所有组件均来自上游开源项目，本仓库仅做"配方固化 + CI 自动化"。下列项目在此特别致谢——**默认 config 已启用的标 ✅，需手动加包启用的标 ➕**：
 
-| 组件 | 上游仓库 | 用途 |
-|------|---------|------|
-| **LuCI Aurora 主题** | [eamonxg/luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora) | LuCI Web 界面主题（默认启用） |
-| LuCI Bootstrap 主题 | OpenWrt `feeds/luci` | 备用主题 |
-| PassWall2 | [OpenWrt / luci-app-passwall2](https://github.com/xiaorouji/openwrt-passwall) | 代理客户端 |
-| OpenWrt 本身 | [openwrt/openwrt](https://github.com/openwrt/openwrt) | 底层系统 |
+### 内核与基础系统
+
+| 组件 | 上游 | 状态 |
+|------|------|------|
+| [OpenWrt](https://github.com/openwrt/openwrt) | openwrt/openwrt | ✅ 基础系统 |
+| [LuCI](https://github.com/openwrt/luci) | openwrt/luci | ✅ Web 界面 |
+| Linux Kernel (6.12.94) | kernel.org | ✅ via `kmod-*` |
+| musl libc | musl.libc.org | ✅ |
+
+### LuCI 应用
+
+| 包名 | 上游 | 状态 |
+|------|------|------|
+| `luci-app-firewall` | openwrt/luci | ✅ 默认启用 |
+| `luci-app-frpc` | [chi-mirror/frpc](https://github.com/chi-mirror/frp) + [openwrt/packages](https://github.com/openwrt/packages) | ✅ 默认启用 |
+| `luci-app-package-manager` | openwrt/luci | ✅ 默认启用 |
+| `luci-app-attendedsysupgrade` | [openwrt/luci](https://github.com/openwrt/luci) | ✅ 默认启用 |
+| `luci-app-passwall2` | [xiaorouji/openwrt-passwall](https://github.com/xiaorouji/openwrt-passwall) | ➕ 需 `add_packages` 加 |
+| `luci-app-nikki` | [nikkinikki-org/OpenWrt-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki) | ➕ 需 `add_packages` 加 |
+| `luci-app-ua3f` | [esirplayground/luci-app-ua3f](https://github.com/esirplayground/luci-app-ua3f) | ➕ 需 `add_packages` 加 |
+
+### LuCI 主题
+
+| 主题 | 上游 | 状态 |
+|------|------|------|
+| `luci-theme-bootstrap` | openwrt/luci | ✅ 默认启用 |
+| **`luci-theme-aurora`** | [eamonxg/luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora) | ➕ 需 `add_packages=luci-theme-aurora` |
+| `luci-theme-material` | [openwrt/luci](https://github.com/openwrt/luci) | ➕ 可选 |
+
+### LuCI 中文 / i18n
+
+⚠️ 当前 `default.config` **未启用** 任何 `luci-i18n-*` 包。如需中文界面，触发 build 时：
+
+```
+add_packages: luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn luci-i18n-frpc-zh-cn
+```
+
+详细可用 i18n 包列表：`grep '^# CONFIG_PACKAGE_luci-i18n-' config/default.config`
+
+### 反审查 / 代理栈（第三方）
+
+| 组件 | 上游 | 状态 |
+|------|------|------|
+| `v2ray-geoip` / `v2ray-geosite` | [v2fly/v2fly-github-io](https://github.com/v2fly/v2fly-github-io) / Loyalsoldier | ✅ 路由数据库（**但无 client 配套**） |
+| PassWall2 | [xiaorouji/openwrt-passwall](https://github.com/xiaorouji/openwrt-passwall) | ➕ 需加 |
+| mihomo (Clash Meta) | [MetaCubeX/mihomo](https://github.com/MetaCubeX/mihomo) | ➕ 需加 `luci-app-mihomo` |
+| Nikki (Hiddify 兼容) | [nikkinikki-org/OpenWrt-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki) | ➕ 需加 |
+| UA3F (User-Agent 伪装) | [esirplayground/luci-app-ua3f](https://github.com/esirplayground/luci-app-ua3f) | ➕ 需加 |
+| Hiddify-core | [hiddify/hiddify-app](https://github.com/hiddify/hiddify-app) | ➕ 需加 |
+| Zapret2 | [bol-van/zapret](https://github.com/bol-van/zapret) | ❌ 不在 feeds，手动注入到 `/opt/zapret2/` |
+
+### 工具与辅助
+
+| 组件 | 上游 |
+|------|------|
+| frpc (frp client) | [fatedier/frp](https://github.com/fatedier/frp) |
+| OpenWrt Package 仓库 | [openwrt/packages](https://github.com/openwrt/packages) |
 
 如果这些项目对您有帮助，请给上游点 ⭐ 支持原作者。
 
