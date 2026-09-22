@@ -70,7 +70,7 @@
 
 打开 [`docs/builder.html`](docs/builder.html)（推荐 GitHub Pages 启用后从 `https://r3zound.github.io/openwrt-v50-builder/builder.html` 访问）：
 
-1. 填入一个 **GitHub PAT**（`repo` scope，[一键创建] →）
+1. 填入一个 **GitHub PAT**（`repo` scope，[一键创建](https://github.com/settings/tokens/new?scopes=repo&description=V50+Builder) →）
 3. 勾选要添加的插件（luci-app-* / luci-theme-* / 中文包，约 60 个常用项 + 自定义 textarea）
 4. 点击 **🚀 开始构建**
 
