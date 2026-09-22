@@ -109,7 +109,7 @@
 包含的关键组件：
 
 - **核心系统**：`base-files`, `busybox`, `procd`, `uci`, `dropbear`, `dnsmasq-full`, `firewall4`
-- **LuCI 界面**：`luci-mod-admin-full` + `aurora` + `bootstrap` 双主题 + 全中文包
+- **LuCI 界面**：`luci-mod-admin-full` + [`luci-theme-aurora`](https://github.com/eamonxg/luci-theme-aurora) + `luci-theme-bootstrap` 双主题 + 全中文包
 - **代理反审查**：`PassWall2`, `UA3F`, `nikki + hiddify-core`, `mihomo-alpha`, `v2ray-geoip/geosite`
 - **Zapret2**（手动安装在 `/opt/zapret2/`，**默认 config 不含**，需要 post-process 注入）
 - **ZTE 定制**（手动写在 `/etc/rc.local`，**默认 config 不含**，需要 post-process 注入）：
@@ -197,6 +197,21 @@ CI 输出与开箱即用的 V50 镜像之间还差：
 4. `credentials/` 目录**禁止**提交
 
 详细规则见 [`AGENTS.md`](AGENTS.md)。
+
+---
+
+## 致谢与上游引用 / Credits & upstream
+
+本项目构建的 OpenWrt 镜像中的 LuCI 主题、第三方应用包均来自上游开源项目，本项目仅做"配方固化 + CI 自动化"工作。下列项目在此特别致谢：
+
+| 组件 | 上游仓库 | 用途 |
+|------|---------|------|
+| **LuCI Aurora 主题** | [eamonxg/luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora) | LuCI Web 界面主题（默认启用） |
+| LuCI Bootstrap 主题 | OpenWrt `feeds/luci` | 备用主题 |
+| PassWall2 | [OpenWrt / luci-app-passwall2](https://github.com/xiaorouji/openwrt-passwall) | 代理客户端 |
+| OpenWrt 本身 | [openwrt/openwrt](https://github.com/openwrt/openwrt) | 底层系统 |
+
+如果这些项目对您有帮助，请给上游点 ⭐ 支持原作者。
 
 ---
 
