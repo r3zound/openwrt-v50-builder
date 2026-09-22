@@ -1,0 +1,147 @@
+name: build-v50-firmware
+
+# This workflow:
+#   1. downloads a 1 GB template image from a release of THIS repo
+#      (default: the release tagged "template" with asset "openwrt-V50-template.img")
+#   2. runs tools/inject.sh to remove specified packages
+#   3. compresses the result with gzip
+#   4. publishes openwrt-final.img.gz as a new release on this repo
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Release tag name. Leave blank for auto (nightly-<timestamp>)."
+        required: false
+        default: ""
+      template_release_tag:
+        description: "Which release holds the template image. Default: template."
+        required: false
+        default: "template"
+      template_asset:
+        description: "Filename of the template image inside that release."
+        required: false
+        default: "openwrt-V50-template.img"
+      remove_packages:
+        description: "Space-separated package names to remove."
+        required: false
+        default: "ua3f nikki hiddify"
+      prerelease:
+        description: "Mark new release as pre-release."
+        required: false
+        type: choice
+        default: "true"
+        options:
+          - "true"
+          - "false"
+  schedule:
+    # Weekly: Monday 02:00 UTC
+    - cron: "0 2 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential clang flex bison gperf gawk \
+            git wget unzip rsync subversion gettext \
+            libncurses-dev libssl-dev zlib1g-dev \
+            python3 python3-setuptools python3-pyelftools \
+            xxd zstd
+
+      - name: Verify template release exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ inputs.template_release_tag || 'template' }}"
+          echo "Looking for release: $TAG"
+          gh release view "$TAG" --repo "${{ github.repository }}" \
+            --json tagName,name \
+            || { echo "::error::Release '$TAG' not found. Upload the 1 GB template image to that release first."; exit 1; }
+
+      - name: Download template image
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p template
+          gh release download "${{ inputs.template_release_tag || 'template' }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "${{ inputs.template_asset }}" \
+            --dir template/ \
+            --clobber
+          echo "=== template dir ==="
+          ls -lh template/
+
+      - name: Run template injection
+        id: inject
+        run: |
+          chmod +x tools/inject.sh
+          ./tools/inject.sh \
+            --template "template/${{ inputs.template_asset }}" \
+            --remove  "${{ inputs.remove_packages }}" \
+            --output  openwrt-final.img
+          echo "removed=${{ inputs.remove_packages }}" >> "$GITHUB_OUTPUT"
+
+      - name: Compress image
+        run: |
+          python3 tools/gzip_image.py \
+            --src openwrt-final.img \
+            --dst openwrt-final.img.gz
+          ls -lh openwrt-final.img*
+
+      - name: Generate SHA256SUMS
+        run: |
+          sha256sum openwrt-final.img openwrt-final.img.gz > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Resolve release tag
+        id: tag
+        run: |
+          if [ -n "${{ inputs.release_tag }}" ]; then
+            TAG="${{ inputs.release_tag }}"
+          else
+            TAG="nightly-$(date -u +%Y%m%d-%H%M%S)"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Release tag: $TAG"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.tag }}
+          generate_release_notes: true
+          prerelease: ${{ inputs.prerelease || 'true' }}
+          files: |
+            openwrt-final.img.gz
+            SHA256SUMS
+          body: |
+            Build from `${{ github.workflow }}` triggered by `${{ github.event_name }}`.
+
+            **Removed packages**: `${{ inputs.remove_packages }}`
+            **Template release**: `${{ inputs.template_release_tag || 'template' }}`
+            **Template asset**:   `${{ inputs.template_asset }}`
+
+            See [README](https://github.com/${{ github.repository }}#readme) for usage.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Build summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Release tag: ${{ steps.tag.outputs.tag }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Removed: ${{ inputs.remove_packages }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Template: ${{ inputs.template_release_tag || 'template' }} / ${{ inputs.template_asset }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Files: openwrt-final.img.gz, SHA256SUMS" >> "$GITHUB_STEP_SUMMARY"
