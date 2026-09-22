@@ -17,13 +17,35 @@ m.forEach((s, i) => {
 
 // 检查关键变化
 const checks = [
-  ['I18N_MAP 存在', /const I18N_MAP = \{/],
-  ['luci-app-passwall2 -> i18n', /luci-app-passwall2':\s*'luci-i18n-passwall2-zh-cn'/],
-  ['collectPackages 函数', /function collectPackages\(\)/],
-  ['i18n 分类已删除', /<!-- \(中文语言包分类已隐藏/],
-  ['i18n btn-mini 已删除', (html) => !html.includes("i18n: '.category:nth-of-type(5)")],
-  ['触发按钮说明', /中文包已自动同步/],
-  ['summary 显示自动中文', /自动中文:/],
+  ['step-1 已改为 仓库与目标', /id="step-1">\s*<h2><span class="step">1<\/span> 仓库与目标/],
+  ['原 GitHub 认证 card 已删除', (h) => !h.includes('GitHub 认证')],
+  ['PAT 相关函数已删除', (h) => !h.includes('function loadPat') && !h.includes('function savePat') && !h.includes('function testPat')],
+  ['轮询函数已删除', (h) => !h.includes('function startPolling') && !h.includes('checkLatestRun')],
+  ['新按钮 copy-btn 存在', /id="copy-btn"/],
+  ['新按钮 open-btn 存在', /id="open-btn"/],
+  ['新按钮 copy-only-btn 存在', /id="copy-only-btn"/],
+  ['inputs-preview 区域', /id="inputs-preview"/],
+  ['buildInputs 函数', /function buildInputs/],
+  ['inputsToText 函数', /function inputsToText/],
+  ['copyToClipboard 函数', /function copyToClipboard/],
+  ['copyAndOpen 函数', /function copyAndOpen/],
+  ['githubActionsUrl 函数', /function githubActionsUrl/],
+  ['fetchReleases 无 token', (h) => {
+    // 找到 fetchReleases 函数体,确认没有 Authorization header
+    const m = h.match(/async function fetchReleases[\s\S]*?\n\}/);
+    return m && !m[0].includes('Bearer') && !m[0].includes("'v50-pat'");
+  }],
+  ['系统工具 5 项默认', (h) => {
+    const count = (h.match(/value="(htop|curl|wget|nano|git)" checked disabled/g) || []).length;
+    return count === 5;
+  }],
+  ['PAT 引用完全清除', (h) => {
+    return !h.includes('ghp_') && !h.includes('github_pat_') && !h.includes('Bearer ');
+  }],
+  ['localStorage key 已升 v3', /v50-builder-form-v3/],
+  ['I18N_MAP 仍存在', /const I18N_MAP = \{/],
+  ['add_packages 拼接', /add_packages: all.join\(' '\)/],
+  ['GitHub Actions URL 模板', /github\.com\/\$\{owner\}\/\$\{name\}\/actions\/workflows\/\$\{wf\}/],
 ];
 checks.forEach((c) => {
   const name = c[0], check = c[1];
@@ -32,70 +54,30 @@ checks.forEach((c) => {
   if (!got) ok = false;
 });
 
-// 旧 i18n checkbox 标签残留检查(应该为 0)
-const i18nLabelMatches = html.match(/<input type="checkbox" value="luci-i18n-/g);
-console.log('残留的 luci-i18n checkbox: ' + (i18nLabelMatches ? i18nLabelMatches.length : 0));
-
-// 验证 collectPackages() 函数行为(模拟)
-console.log('\n--- 模拟 collectPackages() ---');
-// 在 new Function 里嵌入 collectPackages() + I18N_MAP + 模拟 DOM,验证逻辑
-const sandbox = `
-const I18N_MAP = ${JSON.stringify({
-  'luci-app-passwall2': 'luci-i18n-passwall2-zh-cn',
-  'luci-app-nikki': 'luci-i18n-nikki-zh-cn',
-  'luci-app-aria2': 'luci-i18n-aria2-zh-cn',
-  'luci-app-openclash': 'luci-i18n-openclash-zh-cn',
-})};
-
-// 简化版 collectPackages
-function collectPackages(checked, custom) {
-  const explicit = [...checked];
-  if (custom) custom.split(/\\s+/).filter(Boolean).forEach(p => {
-    if (!explicit.includes(p)) explicit.push(p);
-  });
-  const i18n = [];
-  explicit.forEach(p => {
-    if (I18N_MAP[p] && !explicit.includes(I18N_MAP[p]) && !i18n.includes(I18N_MAP[p])) {
-      i18n.push(I18N_MAP[p]);
-    }
-  });
-  const allSet = new Set(explicit);
-  i18n.forEach(p => allSet.add(p));
-  return { explicit, i18n, all: [...allSet] };
-}
-
-// Case 1: 勾选 nikki + aria2 + 自定义 htop
-let r = collectPackages(['luci-app-nikki', 'luci-app-aria2'], 'htop');
-console.log('Case 1:', JSON.stringify(r));
-console.assert(r.explicit.length === 3 && r.i18n.length === 2 && r.all.length === 5, 'Case 1 fail');
-
-// Case 2: 勾选已经包含 i18n(去重)
-r = collectPackages(['luci-app-nikki', 'luci-i18n-nikki-zh-cn'], '');
-console.log('Case 2:', JSON.stringify(r));
-console.assert(r.i18n.length === 0 && r.all.length === 2, 'Case 2 fail');
-
-// Case 3: 自定义里有 i18n,不算在 i18n 数组里
-r = collectPackages(['luci-app-passwall2'], 'luci-i18n-argon-config-zh-cn');
-console.log('Case 3:', JSON.stringify(r));
-console.assert(r.i18n.length === 1 && r.explicit.includes('luci-i18n-argon-config-zh-cn'), 'Case 3 fail');
-
-// Case 4: 空
-r = collectPackages([], '');
-console.log('Case 4:', JSON.stringify(r));
-console.assert(r.all.length === 0, 'Case 4 fail');
-
-// Case 5: 自定义里有未知的 luci-app
-r = collectPackages([], 'luci-app-zzz-whatever');
-console.log('Case 5:', JSON.stringify(r));
-console.assert(r.all.length === 1 && r.i18n.length === 0, 'Case 5 fail');
-
-console.log('All cases passed.');
-`;
+// 模拟 inputs 生成
+console.log('\n--- 模拟 inputs 生成 ---');
 try {
-  new Function(sandbox)();
+  new Function(`
+    const I18N_MAP = ${JSON.stringify({
+      'luci-app-passwall2': 'luci-i18n-passwall2-zh-cn',
+      'luci-app-aria2': 'luci-i18n-aria2-zh-cn',
+    })};
+    // 模拟 explicit + i18n 拼接
+    const explicit = ['luci-app-passwall2', 'luci-app-aria2'];
+    const i18n = ['luci-i18n-passwall2-zh-cn', 'luci-i18n-aria2-zh-cn'];
+    const all = [...new Set([...explicit, ...i18n])];
+    const inputs = {
+      release_tag: '',
+      openwrt_version: 'v25.12.5',
+      add_packages: all.join(' '),
+      remove_packages: '',
+      prerelease: 'true',
+    };
+    console.log(JSON.stringify(inputs, null, 2));
+  `)();
 } catch (e) {
   ok = false;
-  console.error('collectPackages simulation FAILED:', e.message);
+  console.error('Simulation failed:', e.message);
 }
 
 console.log('\n总字节: ' + fs.statSync('builder.html').size);

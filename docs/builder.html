@@ -48,7 +48,7 @@ header p { color: var(--muted); font-size: 14px; }
 }
 
 /* ---------- Form controls ---------- */
-input[type=text], input[type=password], textarea, select {
+input[type=text], textarea, select {
   width: 100%; padding: 8px 10px; background: var(--code-bg); color: var(--text);
   border: 1px solid var(--border); border-radius: 6px;
   font-family: ui-monospace, "Cascadia Code", "Consolas", monospace; font-size: 13px;
@@ -183,14 +183,6 @@ a { color: var(--accent); }
 .release-item .files { font-size: 11px; color: var(--muted); margin-top: 4px; }
 .release-item .files a { margin-right: 8px; }
 
-.progress-bar {
-  height: 4px; background: var(--code-bg); border-radius: 2px;
-  overflow: hidden; margin-top: 4px;
-}
-.progress-bar > div {
-  height: 100%; background: var(--accent); transition: width 0.3s;
-}
-
 details { margin-top: 8px; }
 summary { cursor: pointer; font-size: 13px; color: var(--muted); user-select: none; }
 
@@ -217,38 +209,22 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
 
 <header>
   <h1>🛠️ V50 固件定制</h1>
-  <p>openwrt-v50-builder · 勾选插件 → 点击构建 → 自动触发 GitHub Actions 编译 OpenWrt 25.12.5</p>
+  <p>openwrt-v50-builder · 勾选插件 → 复制 inputs → 在 GitHub Actions 页面点 Run workflow</p>
 </header>
 
 <nav class="nav-pills">
-  <a href="#step-1">① 认证</a>
-  <a href="#step-2">② 仓库</a>
-  <a href="#step-3">③ 插件</a>
-  <a href="#step-4">④ 移除</a>
-  <a href="#step-5">⑤ Release</a>
-  <a href="#step-6">⑥ 触发</a>
-  <a href="#step-7">⑦ 历史</a>
+  <a href="#step-1">① 仓库</a>
+  <a href="#step-2">② 插件</a>
+  <a href="#step-3">③ 移除</a>
+  <a href="#step-4">④ Release</a>
+  <a href="#step-5">⑤ 触发</a>
+  <a href="#step-6">⑥ 历史</a>
 </nav>
 
-<!-- ============ 步骤 1: 认证 ============ -->
+<!-- ============ 步骤 1: 仓库配置 ============ -->
 <div class="card" id="step-1">
-  <h2><span class="step">1</span> GitHub 认证</h2>
-  <p class="help">填入一个 <strong>Personal Access Token (PAT)</strong>，需要 <code>repo</code> 权限。
-    Token 仅保存在你浏览器本地 (<code>localStorage</code>)，不会上传任何服务器。
-    <a href="https://github.com/settings/tokens/new?scopes=repo&description=V50+Builder" target="_blank">创建新 Token →</a></p>
-  <input type="password" id="pat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
-  <div class="actions" style="margin-top:8px">
-    <button class="btn btn-secondary" id="save-pat">保存 Token</button>
-    <button class="btn btn-secondary" id="clear-pat">清除</button>
-    <button class="btn btn-secondary" id="test-pat" disabled>测试连接</button>
-    <span id="pat-status" style="font-size:13px;color:var(--muted);align-self:center"></span>
-  </div>
-</div>
-
-<!-- ============ 步骤 2: 仓库配置 ============ -->
-<div class="card" id="step-2">
-  <h2><span class="step">2</span> 仓库与目标</h2>
-  <p class="help">默认已填好,无需改动即可触发本仓库的构建。Fork 后想触发自己 fork 仓库的构建,改下面三项。</p>
+  <h2><span class="step">1</span> 仓库与目标</h2>
+  <p class="help">默认已填好本仓库,无需改动即可触发构建。Fork 后想触发自己 fork 仓库的构建,改下面三项。</p>
   <div class="row">
     <div>
       <label style="font-size:13px;color:var(--muted)">仓库 owner</label>
@@ -265,10 +241,10 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
   </div>
 </div>
 
-<!-- ============ 步骤 3: 选择插件 ============ -->
-<div class="card" id="step-3">
-  <h2><span class="step">3</span> 选择要 <strong style="color:var(--accent)">添加</strong> 的插件</h2>
-  <p class="help">默认 config 已含 <span class="tag default">frpc / passwall2 / firewall / aurora / 中文基础包</span>。这里选的是要在默认基础上<strong>额外添加</strong>的包。
+<!-- ============ 步骤 2: 选择插件 ============ -->
+<div class="card" id="step-2">
+  <h2><span class="step">2</span> 选择要 <strong style="color:var(--accent)">添加</strong> 的插件</h2>
+  <p class="help">默认 config 已含 <span class="tag default">frpc / passwall2 / firewall / aurora / 中文基础包</span>,系统工具(htop/curl/nano/wget/git)已默认勾上。这里选的是要<strong>额外添加</strong>的包。
     所有选择自动保存到 localStorage(刷新页面不丢)。</p>
 
   <!-- 代理插件分组 -->
@@ -373,15 +349,15 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
       </div>
     </div>
     <div class="pkg-grid">
-      <label><input type="checkbox" value="htop"><span><span class="name">htop</span><span class="desc">进程监控</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="htop" checked disabled><span><span class="name">htop</span><span class="tag default">已默认</span><span class="desc">进程监控</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="curl" checked disabled><span><span class="name">curl</span><span class="tag default">已默认</span><span class="desc">命令行下载</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="wget" checked disabled><span><span class="name">wget</span><span class="tag default">已默认</span><span class="desc">命令行下载</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="nano" checked disabled><span><span class="name">nano</span><span class="tag default">已默认</span><span class="desc">简单编辑器</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="git" checked disabled><span><span class="name">git</span><span class="tag default">已默认</span><span class="desc">版本控制</span></span></label>
       <label><input type="checkbox" value="btop"><span><span class="name">btop</span><span class="desc">更美观的性能监控</span></span></label>
       <label><input type="checkbox" value="tmux"><span><span class="name">tmux</span><span class="desc">终端复用</span></span></label>
       <label><input type="checkbox" value="screen"><span><span class="name">screen</span><span class="desc">后台会话</span></span></label>
-      <label><input type="checkbox" value="curl"><span><span class="name">curl</span><span class="desc">命令行下载</span></span></label>
-      <label><input type="checkbox" value="wget"><span><span class="name">wget</span><span class="desc">命令行下载</span></span></label>
-      <label><input type="checkbox" value="nano"><span><span class="name">nano</span><span class="desc">简单编辑器</span></span></label>
       <label><input type="checkbox" value="vim"><span><span class="name">vim</span><span class="desc">经典编辑器</span></span></label>
-      <label><input type="checkbox" value="git"><span><span class="name">git</span><span class="desc">版本控制</span></span></label>
       <label><input type="checkbox" value="auto-core"><span><span class="name">auto-core</span><span class="desc">CPU 调度优化</span></span></label>
       <label><input type="checkbox" value="automount"><span><span class="name">automount</span><span class="desc">自动挂载 USB</span></span></label>
       <label><input type="checkbox" value="block-mount"><span><span class="name">block-mount</span><span class="desc">块设备挂载</span></span></label>
@@ -392,8 +368,6 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
       <label><input type="checkbox" value="speedtest-web"><span><span class="name">speedtest-web</span><span class="desc">网页测速</span></span></label>
     </div>
   </div>
-
-  <!-- (中文语言包分类已隐藏——见下方说明) -->
 
   <!-- 自定义包 -->
   <div class="category">
@@ -416,16 +390,16 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
   </div>
 </div>
 
-<!-- ============ 步骤 4: 移除 ============ -->
-<div class="card" id="step-4">
-  <h2><span class="step">4</span> 移除 <strong style="color:var(--danger)">默认</strong>包</h2>
+<!-- ============ 步骤 3: 移除 ============ -->
+<div class="card" id="step-3">
+  <h2><span class="step">3</span> 移除 <strong style="color:var(--danger)">默认</strong>包</h2>
   <p class="help">从默认 <code>config/default.config</code> 里禁用某些包(空格分隔)。常用: <code>luci-theme-aurora</code>。</p>
   <textarea id="custom-remove" placeholder="luci-theme-aurora luci-app-passwall2"></textarea>
 </div>
 
-<!-- ============ 步骤 5: Release 选项 ============ -->
-<div class="card" id="step-5">
-  <h2><span class="step">5</span> Release 选项</h2>
+<!-- ============ 步骤 4: Release 选项 ============ -->
+<div class="card" id="step-4">
+  <h2><span class="step">4</span> Release 选项</h2>
   <div class="row">
     <div>
       <label style="font-size:13px;color:var(--muted)">Release tag</label>
@@ -445,25 +419,30 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
   </div>
 </div>
 
-<!-- ============ 步骤 6: 触发 ============ -->
-<div class="card" id="step-6">
+<!-- ============ 步骤 5: 触发 ============ -->
+<div class="card" id="step-5">
   <h2><span class="step">✓</span> 触发构建</h2>
-  <p class="help">点击后调用 <code>POST /repos/.../actions/workflows/build.yml/dispatches</code>,完成后自动轮询最新 run。</p>
+  <p class="help">选完后点下方按钮 → <strong>复制 inputs 到剪贴板</strong> → 自动打开 GitHub Actions 页面 → 在那里点 <strong>Run workflow</strong> 并把每个字段粘贴进去。
+    <br>整个流程<strong>无需任何 token</strong> —— GitHub 用自己的登录态校验权限。</p>
   <div class="summary-box" id="summary">未选择任何额外包</div>
+  <details>
+    <summary>📋 展开 inputs 预览(可手动复制)</summary>
+    <pre id="inputs-preview" style="background:var(--code-bg);padding:10px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto"></pre>
+  </details>
   <div class="actions">
-    <button class="btn" id="trigger-btn" disabled>🚀 开始构建</button>
-    <button class="btn btn-secondary" id="check-btn" disabled>🔄 查看最新 run</button>
-    <button class="btn btn-secondary" id="cancel-poll-btn" style="display:none">⏹ 停止轮询</button>
+    <button class="btn" id="copy-btn">📋 复制 inputs 并打开 GitHub</button>
+    <button class="btn btn-secondary" id="open-btn">🔗 仅打开 GitHub Actions</button>
+    <button class="btn btn-secondary" id="copy-only-btn">📑 仅复制 inputs</button>
   </div>
   <div id="status" class="status"></div>
 </div>
 
-<!-- ============ 步骤 7: 历史 releases ============ -->
-<div class="card" id="step-7">
+<!-- ============ 步骤 6: 最近 releases ============ -->
+<div class="card" id="step-6">
   <h2><span class="step">📜</span> 最近 Release</h2>
-  <p class="help">从 <code>GET /repos/{owner}/{repo}/releases?per_page=5</code> 拉取最近 5 个发布版本。</p>
+  <p class="help">从 GitHub 公开 API 拉取最近 5 个 release,无需 token。</p>
   <div class="actions">
-    <button class="btn btn-secondary" id="refresh-releases-btn" disabled>🔄 刷新</button>
+    <button class="btn btn-secondary" id="refresh-releases-btn">🔄 刷新</button>
     <span id="releases-status" style="font-size:13px;color:var(--muted);align-self:center"></span>
   </div>
   <div id="releases" class="releases"></div>
@@ -471,116 +450,16 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
 
 <footer>
   <a href="https://github.com/r3zound/openwrt-v50-builder" target="_blank">r3zound/openwrt-v50-builder</a> ·
-  本页面仅在你的浏览器内运行,Token 永不上传。
+  本页面仅在你的浏览器内运行,完全不接触 token。
 </footer>
 
 </div>
 
 <script>
 const $ = (id) => document.getElementById(id);
-const LS_KEY = 'v50-builder-form-v2';
-
-// ============== 表单持久化 ==============
-const FORM_FIELDS = [
-  'pat', 'repo-owner', 'repo-name', 'workflow-file',
-  'custom-add', 'custom-remove', 'release-tag', 'owrt-version', 'prerelease',
-];
-const CHECKBOX_SELECTORS = [
-  '.pkg-grid input[type=checkbox]:not(:disabled)',
-];
-
-function saveForm() {
-  const obj = {};
-  FORM_FIELDS.forEach(id => { const el = $(id); if (el) obj[id] = el.value; });
-  obj.checkboxes = getChecked();
-  localStorage.setItem(LS_KEY, JSON.stringify(obj));
-  $('save-status').textContent = '✓ 已保存到 localStorage';
-  setTimeout(() => { $('save-status').textContent = ''; }, 2500);
-}
-
-function restoreForm() {
-  let obj;
-  try { obj = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch { return; }
-  if (!obj) return;
-  FORM_FIELDS.forEach(id => { if (obj[id] !== undefined && $(id)) $(id).value = obj[id]; });
-  if (Array.isArray(obj.checkboxes)) {
-    const wanted = new Set(obj.checkboxes);
-    document.querySelectorAll(CHECKBOX_SELECTORS.join(',')).forEach(c => {
-      if (wanted.has(c.value)) c.checked = true;
-    });
-  }
-}
-
-function resetForm() {
-  if (!confirm('确定要清空所有选项吗?(会保留 PAT 和仓库配置)')) return;
-  // 清空 checkbox 选项
-  document.querySelectorAll(CHECKBOX_SELECTORS.join(',')).forEach(c => {
-    if (!c.disabled) c.checked = false;
-  });
-  // 清空 textarea
-  ['custom-add', 'custom-remove', 'release-tag'].forEach(id => $(id).value = '');
-  $('owrt-version').value = 'v25.12.5';
-  $('prerelease').value = 'true';
-  saveForm();
-  updateSummary();
-  $('save-status').textContent = '✓ 已重置';
-  setTimeout(() => { $('save-status').textContent = ''; }, 2500);
-}
-
-// ============== Token 管理 ==============
-function loadPat() {
-  const pat = $('pat').value.trim();
-  $('pat-status').textContent = pat ? '✓ 已保存' : '';
-  $('trigger-btn').disabled = !pat;
-  $('check-btn').disabled = !pat;
-  $('test-pat').disabled = !pat;
-  $('refresh-releases-btn').disabled = !pat;
-  return !!pat;
-}
-function savePat() {
-  const pat = $('pat').value.trim();
-  if (!pat.startsWith('ghp_') && !pat.startsWith('github_pat_')) {
-    showStatus('Token 格式不对(应以 ghp_ 或 github_pat_ 开头)', 'error');
-    return;
-  }
-  localStorage.setItem('v50-pat', pat);
-  $('pat-status').textContent = '✓ 已保存到 localStorage';
-  showStatus('Token 已保存。下次打开页面会自动填入。', 'success');
-  loadPat();
-}
-function clearPat() {
-  localStorage.removeItem('v50-pat');
-  $('pat').value = '';
-  $('pat-status').textContent = '';
-  $('trigger-btn').disabled = true;
-  $('check-btn').disabled = true;
-  $('test-pat').disabled = true;
-  $('refresh-releases-btn').disabled = true;
-  showStatus('Token 已清除。', 'info');
-}
-async function testPat() {
-  const pat = $('pat').value.trim();
-  if (!pat) return;
-  showStatus('测试 PAT 连接...', 'info');
-  try {
-    const r = await fetch('https://api.github.com/user', {
-      headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json' },
-    });
-    if (r.ok) {
-      const d = await r.json();
-      showStatus(`<strong>✓ 连接成功</strong> · 用户 ${escapeHtml(d.login)} · ${escapeHtml(d.name || '(无姓名)')}`, 'success');
-    } else {
-      showStatus(`<strong>连接失败</strong>: HTTP ${r.status}`, 'error');
-    }
-  } catch (e) {
-    showStatus('测试错误: ' + e.message, 'error');
-  }
-}
+const LS_KEY = 'v50-builder-form-v3';
 
 // ============== i18n 自动同步映射表 ==============
-// 勾选这些 luci-app-* 时,自动追加对应的 luci-i18n-<name>-zh-cn。
-// 不是所有 luci-app 都有官方 i18n 包,白名单可以避免 make defconfig 警告。
-// 新包加入 builder 时务必同步此表。
 const I18N_MAP = {
   'luci-app-passwall2': 'luci-i18n-passwall2-zh-cn',
   'luci-app-openclash': 'luci-i18n-openclash-zh-cn',
@@ -617,8 +496,53 @@ const I18N_MAP = {
   'luci-app-rclone': 'luci-i18n-rclone-zh-cn',
 };
 
+// ============== 表单持久化 ==============
+const FORM_FIELDS = [
+  'repo-owner', 'repo-name', 'workflow-file',
+  'custom-add', 'custom-remove', 'release-tag', 'owrt-version', 'prerelease',
+];
+const CHECKBOX_SELECTORS = [
+  '.pkg-grid input[type=checkbox]:not(:disabled)',
+];
+
+function saveForm() {
+  const obj = {};
+  FORM_FIELDS.forEach(id => { const el = $(id); if (el) obj[id] = el.value; });
+  obj.checkboxes = getChecked();
+  localStorage.setItem(LS_KEY, JSON.stringify(obj));
+  $('save-status').textContent = '✓ 已保存到 localStorage';
+  setTimeout(() => { $('save-status').textContent = ''; }, 2500);
+}
+
+function restoreForm() {
+  let obj;
+  try { obj = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch { return; }
+  if (!obj) return;
+  FORM_FIELDS.forEach(id => { if (obj[id] !== undefined && $(id)) $(id).value = obj[id]; });
+  if (Array.isArray(obj.checkboxes)) {
+    const wanted = new Set(obj.checkboxes);
+    document.querySelectorAll(CHECKBOX_SELECTORS.join(',')).forEach(c => {
+      if (wanted.has(c.value)) c.checked = true;
+    });
+  }
+}
+
+function resetForm() {
+  if (!confirm('确定要清空所有选项吗?(会保留仓库配置)')) return;
+  document.querySelectorAll(CHECKBOX_SELECTORS.join(',')).forEach(c => {
+    if (!c.disabled) c.checked = false;
+  });
+  ['custom-add', 'custom-remove', 'release-tag'].forEach(id => $(id).value = '');
+  $('owrt-version').value = 'v25.12.5';
+  $('prerelease').value = 'true';
+  saveForm();
+  updateSummary();
+  updateInputsPreview();
+  $('save-status').textContent = '✓ 已重置';
+  setTimeout(() => { $('save-status').textContent = ''; }, 2500);
+}
+
 // ============== 收集已勾选包 ==============
-// 返回 {explicit: 用户勾选 + 自定义, i18n: 自动追加的中文包, all: 合并去重列表}
 function collectPackages() {
   const explicit = [];
   document.querySelectorAll(CHECKBOX_SELECTORS.join(',') + ':checked').forEach(c => explicit.push(c.value));
@@ -627,7 +551,6 @@ function collectPackages() {
     if (!explicit.includes(p)) explicit.push(p);
   });
 
-  // 自动同步 i18n:遍历 explicit,凡是 I18N_MAP 里有映射的,就追加
   const i18n = [];
   explicit.forEach(p => {
     if (I18N_MAP[p] && !explicit.includes(I18N_MAP[p]) && !i18n.includes(I18N_MAP[p])) {
@@ -648,7 +571,35 @@ function getRemoved() {
   return $('custom-remove').value.trim().split(/\s+/).filter(Boolean);
 }
 
-// ============== 摘要 ==============
+// ============== 构造 GitHub Actions inputs ==============
+function buildInputs() {
+  const { explicit, i18n, all } = collectPackages();
+  const removed = getRemoved();
+  return {
+    release_tag: $('release-tag').value.trim(),
+    openwrt_version: $('owrt-version').value.trim() || 'v25.12.5',
+    add_packages: all.join(' '),
+    remove_packages: removed.join(' '),
+    prerelease: $('prerelease').value,
+  };
+}
+
+function inputsToText(inputs) {
+  // 格式:每行 "键名: value",方便在 Run workflow 表单里逐字段粘贴
+  return Object.entries(inputs)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join('\n');
+}
+
+function githubActionsUrl() {
+  const owner = $('repo-owner').value.trim();
+  const name = $('repo-name').value.trim();
+  const wf = $('workflow-file').value.trim();
+  // 直接跳到该 workflow 的页面(顶部就是 Run workflow 按钮)
+  return `https://github.com/${owner}/${name}/actions/workflows/${wf}`;
+}
+
+// ============== 摘要 + 预览 ==============
 function updateSummary() {
   const { explicit, i18n, all } = collectPackages();
   const removed = getRemoved();
@@ -659,6 +610,10 @@ function updateSummary() {
   }
   if (removed.length) s += '\n  移除: ' + removed.join(' ');
   $('summary').textContent = s || '无变更(直接编译默认 config)';
+}
+
+function updateInputsPreview() {
+  $('inputs-preview').textContent = inputsToText(buildInputs());
 }
 
 // ============== 全选/全不选 ==============
@@ -676,6 +631,7 @@ document.querySelectorAll('.btn-mini').forEach(b => {
     const checked = act === 'all';
     document.querySelectorAll(`${sel} input[type=checkbox]:not(:disabled)`).forEach(c => c.checked = checked);
     updateSummary();
+    updateInputsPreview();
     saveForm();
   };
 });
@@ -687,137 +643,87 @@ function showStatus(msg, kind, html) {
   s.innerHTML = html || msg;
 }
 
-// ============== 触发构建 ==============
-async function triggerBuild() {
-  const pat = $('pat').value.trim();
-  if (!pat) return showStatus('请先填入并保存 GitHub PAT', 'error');
-  const owner = $('repo-owner').value.trim();
-  const name = $('repo-name').value.trim();
-  const wf = $('workflow-file').value.trim();
-  if (!owner || !name || !wf) return showStatus('仓库配置不完整', 'error');
-
-  $('trigger-btn').disabled = true;
-  showStatus('正在触发 GitHub Actions...', 'info');
-
-  const inputs = {
-    add_packages: getChecked().join(' '),
-    remove_packages: getRemoved().join(' '),
-    release_tag: $('release-tag').value.trim(),
-    openwrt_version: $('owrt-version').value.trim() || 'v25.12.5',
-    prerelease: $('prerelease').value,
-  };
-
-  const url = `https://api.github.com/repos/${owner}/${name}/actions/workflows/${wf}/dispatches`;
-  try {
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${pat}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ref: 'main', inputs }),
-    });
-    if (resp.status === 204) {
-      showStatus(`<strong>✓ 已触发</strong> — 等待 GitHub 调度...`, 'success');
-      setTimeout(() => startPolling(), 3000);
-    } else {
-      const body = await resp.text();
-      showStatus(
-        `<strong>触发失败</strong>: HTTP ${resp.status}<br><pre>${escapeHtml(body)}</pre>`,
-        'error'
-      );
-    }
-  } catch (e) {
-    showStatus('网络错误: ' + e.message, 'error');
-  } finally {
-    $('trigger-btn').disabled = false;
+// ============== 复制到剪贴板 ==============
+async function copyToClipboard(text) {
+  // 优先用 navigator.clipboard(异步,需要 https)
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) { /* fall through */ }
   }
+  // 降级:用 textarea + execCommand('copy')
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
 }
 
-// ============== 轮询 run 状态 ==============
-let pollTimer = null;
-function startPolling() {
-  if (pollTimer) clearInterval(pollTimer);
-  $('cancel-poll-btn').style.display = '';
-  const tick = async () => {
-    const ok = await checkLatestRun(false);
-      if (ok === 'done') stopPolling();
-  };
-  tick();
-  pollTimer = setInterval(tick, 15000); // 15s 一次
-}
-function stopPolling() {
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = null;
-  $('cancel-poll-btn').style.display = 'none';
-}
-
-async function checkLatestRun(verbose = true) {
-  const pat = $('pat').value.trim();
-  const owner = $('repo-owner').value.trim();
-  const name = $('repo-name').value.trim();
-  const wf = $('workflow-file').value.trim();
-  if (!pat) return;
-  if (verbose) showStatus('正在查询最新 run 状态...', 'info');
+// ============== 触发:复制 + 打开 ==============
+async function copyAndOpen() {
+  const inputs = buildInputs();
+  const text = inputsToText(inputs);
+  const ok = await copyToClipboard(text);
+  const url = githubActionsUrl();
+  // 立即打开(浏览器可能拦截,所以也提示手动)
+  let opened = false;
   try {
-    const url = `https://api.github.com/repos/${owner}/${name}/actions/workflows/${wf}/runs?per_page=1`;
-    const r = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${pat}`,
-        'Accept': 'application/vnd.github+json',
-      },
-    });
-    if (!r.ok) {
-      if (verbose) showStatus(`查询失败: HTTP ${r.status}`, 'error');
-      return 'error';
-    }
-    const d = await r.json();
-    const run = d.workflow_runs && d.workflow_runs[0];
-    if (!run) {
-      if (verbose) showStatus('未找到 run', 'info');
-      return 'empty';
-    }
-    const status = run.status;       // queued / in_progress / completed
-    const conclusion = run.conclusion; // success / failure / cancelled / null
-    const badge = run.status === 'completed'
-      ? (conclusion === 'success' ? '✓ 成功' : '✗ ' + conclusion)
-      : '⟳ ' + status;
-    const kind = conclusion === 'success' ? 'success'
-      : conclusion === 'failure' ? 'error' : 'info';
-    showStatus(
-      `<strong>${badge}</strong> — ${escapeHtml(run.display_title)}<br>` +
-      `  分支: <code>${escapeHtml(run.head_branch)}</code><br>` +
-      `  触发者: ${escapeHtml(run.actor.login)} · ${escapeHtml(new Date(run.created_at).toLocaleString())}<br>` +
-      `  <a href="${run.html_url}" target="_blank">在 GitHub Actions 中打开 →</a>` +
-      (run.status === 'completed' && conclusion === 'success'
-        ? `<br>  <a href="https://github.com/${owner}/${name}/releases" target="_blank">查看 Release 下载 →</a>`
-        : ''),
-      kind
-    );
-    return run.status === 'completed' ? 'done' : 'pending';
-  } catch (e) {
-    if (verbose) showStatus('查询错误: ' + e.message, 'error');
-    return 'error';
-  }
+    const w = window.open(url, '_blank', 'noopener');
+    opened = !!w;
+  } catch (e) { opened = false; }
+
+  showStatus(
+    (ok ? '<strong>✓ 已复制 inputs</strong> 到剪贴板。<br>' : '<strong>复制失败</strong>,请手动复制下方预览。<br>') +
+    (opened ? '已打开 GitHub Actions 页面 → 在那里点 <strong>Run workflow</strong>,把每个字段粘进去。<br>' : '浏览器拦截了弹窗,请手动打开: <a href="' + url + '" target="_blank">' + url + '</a><br>') +
+    '<pre style="white-space:pre-wrap">' + escapeHtml(text) + '</pre>',
+    ok ? 'success' : 'error'
+  );
 }
 
-// ============== Releases 历史 ==============
+function openOnly() {
+  const url = githubActionsUrl();
+  try { window.open(url, '_blank', 'noopener'); }
+  catch (e) { /* ignore */ }
+  showStatus(
+    '已打开 GitHub Actions 页面。回到本页 → 点 <strong>📋 复制 inputs 并打开 GitHub</strong> 把 inputs 复制进去。<br>' +
+    '<a href="' + url + '" target="_blank">' + url + '</a>',
+    'info'
+  );
+}
+
+async function copyOnly() {
+  const text = inputsToText(buildInputs());
+  const ok = await copyToClipboard(text);
+  showStatus(
+    (ok ? '<strong>✓ 已复制 inputs</strong> 到剪贴板。<br>' : '<strong>复制失败</strong>,请手动复制:<br>') +
+    '<pre style="white-space:pre-wrap">' + escapeHtml(text) + '</pre>',
+    ok ? 'success' : 'error'
+  );
+}
+
+// ============== Releases 历史(公开 API,无需 token) ==============
 async function fetchReleases() {
-  const pat = $('pat').value.trim();
   const owner = $('repo-owner').value.trim();
   const name = $('repo-name').value.trim();
-  if (!pat) return;
+  if (!owner || !name) return;
   $('releases-status').textContent = '加载中...';
   $('refresh-releases-btn').disabled = true;
   try {
+    // GitHub 公开 API 对 public repo 不需要 token(60 次/小时 rate limit)
     const url = `https://api.github.com/repos/${owner}/${name}/releases?per_page=5`;
     const r = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json' },
+      headers: { 'Accept': 'application/vnd.github+json' },
     });
     if (!r.ok) {
       $('releases-status').textContent = `HTTP ${r.status}`;
+      $('releases').innerHTML = '';
       return;
     }
     const list = await r.json();
@@ -831,7 +737,7 @@ async function fetchReleases() {
       const date = new Date(rel.published_at).toLocaleString();
       const preClass = rel.prerelease ? 'pre' : '';
       const tag = escapeHtml(rel.tag_name);
-      const name = escapeHtml(rel.name || rel.tag_name);
+      const relName = escapeHtml(rel.name || rel.tag_name);
       const files = (rel.assets || []).map(a =>
         `<a href="${a.browser_download_url}" target="_blank">${escapeHtml(a.name)}</a> (${(a.size / 1024 / 1024).toFixed(1)}MB)`
       ).join(' · ');
@@ -843,7 +749,7 @@ async function fetchReleases() {
             <span class="meta">${date}</span>
             <a class="meta" href="${rel.html_url}" target="_blank">→ 查看</a>
           </div>
-          ${name !== tag ? `<div class="meta">${name}</div>` : ''}
+          ${relName !== tag ? `<div class="meta">${relName}</div>` : ''}
           <div class="files">${files || '<span style="color:var(--muted)">无附件</span>'}</div>
         </div>`;
     }).join('');
@@ -860,36 +766,23 @@ function escapeHtml(s) {
 }
 
 // ============== 事件绑定 ==============
-$('save-pat').onclick = savePat;
-$('clear-pat').onclick = clearPat;
-$('test-pat').onclick = testPat;
-$('pat').onkeydown = (e) => { if (e.key === 'Enter') savePat(); };
-$('trigger-btn').onclick = triggerBuild;
-$('check-btn').onclick = () => checkLatestRun(true);
-$('cancel-poll-btn').onclick = stopPolling;
+$('copy-btn').onclick = copyAndOpen;
+$('open-btn').onclick = openOnly;
+$('copy-only-btn').onclick = copyOnly;
 $('refresh-releases-btn').onclick = fetchReleases;
 $('save-form').onclick = saveForm;
 $('reset-form').onclick = resetForm;
 document.querySelectorAll('input[type=checkbox], textarea, select').forEach(el => {
-  el.addEventListener('change', updateSummary);
-  el.addEventListener('input', updateSummary);
+  el.addEventListener('change', () => { updateSummary(); updateInputsPreview(); });
+  el.addEventListener('input', () => { updateSummary(); updateInputsPreview(); });
 });
 
 // ============== 初始化 ==============
 function init() {
-  // 1. 恢复 PAT
-  const pat = localStorage.getItem('v50-pat') || '';
-  $('pat').value = pat;
-  // 2. 恢复表单
   restoreForm();
-  // 3. 如果 PAT 恢复了但 form 状态覆盖不到,再 patch
-  if (pat && !$('pat').value) $('pat').value = pat;
-  // 4. 更新按钮状态
-  loadPat();
-  // 5. 更新摘要
   updateSummary();
-  // 6. 自动加载 release 列表(需要 PAT)
-  if (pat) fetchReleases();
+  updateInputsPreview();
+  fetchReleases();
 }
 
 init();

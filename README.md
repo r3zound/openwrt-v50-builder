@@ -72,21 +72,22 @@
 
 **功能概览**：
 
-- **5 大分类 · 78 个常用包**：代理（PassWall2/Nikki/OpenClash/HomeProxy/SSR-Plus/Mihomo/Momo/v2rayA/Fchomo/NeKoBox/Daed/HiJpass/UA3F/luci-xray）/ LuCI 应用（27 项）/ 主题（12 项）/ 系统工具（htop/btop/tmux/iperf3 等）/ 中文 i18n（25 项）
+- **5 大分类 · 78 个常用包**：代理（PassWall2/Nikki/OpenClash/HomeProxy/SSR-Plus/Mihomo/Momo/v2rayA/Fchomo/NeKoBox/Daed/HiJpass/UA3F/luci-xray）/ LuCI 应用（27 项）/ 主题（12 项）/ 系统工具（17 项，htop/curl/nano/wget/git 默认启用）/ 自定义
+- **零认证流程** —— **完全不需要 GitHub PAT**。前端只负责生成 inputs 并复制到剪贴板，自动打开 GitHub Actions 页面，用户在自己登录态下点 Run workflow 即可
 - **中文包自动同步** —— 勾选任何 `luci-app-*` 会自动追加 `luci-i18n-<name>-zh-cn`（基于内置白名单映射表），不需要单独选 i18n 包
 - **每分类全选/全不选** 一键操作
 - **表单自动持久化**（localStorage）—— 刷新页面不丢选项
-- **触发后实时轮询** —— 每 15 秒检查 run 状态，完成自动跳到 release 下载
-- **最近 5 个 Releases 列表** —— 自动从 GitHub API 拉取，含下载链接
+- **最近 5 个 Releases 列表** —— 通过 GitHub **公开 API** 自动拉取，无需 token
 
 **使用流程**：
 
-1. 填入一个 **GitHub PAT**（`repo` scope，[一键创建](https://github.com/settings/tokens/new?scopes=repo&description=V50+Builder) →）
+1. 在仓库与目标卡片确认 `owner/repo/workflow`（默认已填好本仓库）
 2. 勾选要添加的插件（按分类、可全选、可用自定义 textarea 追加任意包名）
-3. 点击 **💾 保存设置**（可选，会自动保存到 localStorage）
-4. 点击 **🚀 开始构建**
+3. 在 Release 选项卡点动版本/tag（可选）
+4. 点击 **📋 复制 inputs 并打开 GitHub** → 自动复制 inputs 到剪贴板 + 打开 GitHub Actions 页面
+6. 在打开的页面点 `Run workflow`，把每个字段粘贴进去即可
 
-页面直接调用 `POST /repos/{owner}/{repo}/actions/workflows/build.yml/dispatches`，**无需后端**。Token 仅存在你的浏览器 `localStorage` 里，**永不上传**。
+整个流程**不接触任何 token** —— GitHub 用你自己的登录态校验权限。如果浏览器拦截弹窗，可手动点 **🔗 仅打开 GitHub Actions** 跳转。
 
 ---
 
