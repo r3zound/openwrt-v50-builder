@@ -101,29 +101,33 @@
 
 `config/default.config` 是从构建服务器 `/home/lg/openwrt-build/openwrt_V5/.config` 摘取的 OpenWrt 编译配置：
 
-- **大小**：287 KB
-- **已启用包**：239 个（`CONFIG_PACKAGE_*=y`）
+- **大小**：295 KB
+- **已启用包**：243 个（`CONFIG_PACKAGE_*=y`）
 - **目标**：`armsr/armv8 DEVICE_generic`
+- **额外 feeds**：[`config/feeds.conf`](config/feeds.conf) 加了 `passwall2` + `theme_aurora` 两个第三方源
 - **可选未启用包**：~4500 个（commented `CONFIG_PACKAGE_* is not set`）
 
-⚠️ **重要**：本 default.config 是**精简版**——只包含 OpenWrt 主仓库 + 标准 feeds 的包。**不含**第三方应用（PassWall2、UA3F、nikki、hiddify-core、mihomo-alpha、Zapret2 等）。如需这些，需要：
-- workflow_dispatch `add_packages` 加上对应名字，或
-- 在 `config/default.config` 末尾追加 `CONFIG_PACKAGE_xxx=y`
+基础包来自 OpenWrt 主仓库 + 标准 feeds；本项目额外启用了：
+- [`luci-theme-aurora`](https://github.com/eamonxg/luci-theme-aurora)（来自 `theme_aurora` feed）
+- `luci-app-passwall2`（来自 `passwall2` feed）
+- `luci-i18n-frpc-zh-cn`、`luci-i18n-passwall2-zh-cn` 中文包
+
+其它第三方包（UA3F、nikki、hiddify-core、mihomo-alpha、Zapret2）**仍需** workflow_dispatch `add_packages` 加上对应名字，或在 `config/default.config` 末尾追加 `CONFIG_PACKAGE_xxx=y`。
 
 ### 关键组件概览
 
 - **核心系统**：`base-files`, `busybox`, `procd`, `uci`, `dropbear`, `dnsmasq-full`, `firewall4`
-- **LuCI 界面**：`luci-mod-admin-full` + `luci-theme-bootstrap` + `luci-light` 主题
+- **LuCI 界面**：`luci-mod-admin-full` + **`luci-theme-aurora`** + `luci-theme-bootstrap` + `luci-light` 主题
 - **网络/IPv6**：`odhcp6c`, `odhcpd-ipv6only`, `luci-proto-ipv6`, `luci-proto-ppp`, `ppp-mod-pppoe`
-- **LuCI 应用**：`luci-app-firewall`, `luci-app-frpc`, `luci-app-package-manager`, `luci-app-attendedsysupgrade`
-- **路由数据**：`v2ray-geoip`, `v2ray-geosite`（**没有** PassWall2 client 配套）
-- **语言**：当前**未启用任何 luci-i18n**（系统默认英文界面）
+- **LuCI 应用**：`luci-app-firewall`, `luci-app-frpc`, **`luci-app-passwall2`**, `luci-app-package-manager`, `luci-app-attendedsysupgrade`
+- **路由数据**：`v2ray-geoip`, `v2ray-geosite`
+- **中文 i18n**：`luci-i18n-frpc-zh-cn`, `luci-i18n-passwall2-zh-cn`（其它包的 zh-cn 仍需 `add_packages`）
 
 ---
 
 ## 内置插件索引 / Bundled package index
 
-按类目整理 `config/default.config` 中所有 239 个启用包（实际清单会随 OpenWrt 版本漂移，以仓库中的 `config/default.config` 为准）：
+按类目整理 `config/default.config` 中所有 243 个启用包（实际清单会随 OpenWrt 版本漂移，以仓库中的 `config/default.config` 为准）：
 
 ### 核心 / Core (11)
 `base-files`, `busybox`, `procd`, `uci`, `dropbear`, `firewall4`, `fstools`, `rpcd`, `ubox`, `ubus`, `uhttpd`
@@ -140,8 +144,8 @@
 ### LuCI 应用 / LuCI apps (4)
 `luci-app-attendedsysupgrade`, `luci-app-firewall`, `luci-app-frpc`, `luci-app-package-manager`
 
-### LuCI 主题 / LuCI themes (1)
-`luci-theme-bootstrap`（如需 Aurora 主题，构建时 `add_packages=luci-theme-aurora`，见下方"致谢与上游引用"）
+### LuCI 主题 / LuCI themes (2)
+`luci-theme-aurora`, `luci-theme-bootstrap`
 
 ### 通用库 / Libraries (36)
 `libc`, `libgcc`, `libpthread`, `librt`, `liblua`, `libubus`, `libuci`, `libubox`, `libblobmsg-json`, `libjson-c`, `libjson-script`, `libnl-tiny`, `libmnl`, `libnftnl`, `libiwinfo`, `libiwinfo-data`, `libuclient`, `libustream-mbedtls`, `libcurl`, `libmbedtls`, `libnghttp2`, `liblucihttp`, `liblucihttp-lua`, `liblucihttp-ucode`, `libuuid`, `libblkid`, `libcomerr`, `libe2p`, `libext2fs`, `libf2fs`, `libss`, `libsmartcols`, `libyaml`, `libucode`, `libudebug`
@@ -274,9 +278,9 @@ CI 输出与开箱即用的 V50 镜像之间还差：
 |------|------|------|
 | `luci-app-firewall` | openwrt/luci | ✅ 默认启用 |
 | `luci-app-frpc` | [chi-mirror/frpc](https://github.com/chi-mirror/frp) + [openwrt/packages](https://github.com/openwrt/packages) | ✅ 默认启用 |
+| `luci-app-passwall2` | [xiaorouji/openwrt-passwall](https://github.com/xiaorouji/openwrt-passwall) | ✅ 默认启用（feed: `passwall2`） |
 | `luci-app-package-manager` | openwrt/luci | ✅ 默认启用 |
 | `luci-app-attendedsysupgrade` | [openwrt/luci](https://github.com/openwrt/luci) | ✅ 默认启用 |
-| `luci-app-passwall2` | [xiaorouji/openwrt-passwall](https://github.com/xiaorouji/openwrt-passwall) | ➕ 需 `add_packages` 加 |
 | `luci-app-nikki` | [nikkinikki-org/OpenWrt-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki) | ➕ 需 `add_packages` 加 |
 | `luci-app-ua3f` | [esirplayground/luci-app-ua3f](https://github.com/esirplayground/luci-app-ua3f) | ➕ 需 `add_packages` 加 |
 
@@ -284,17 +288,18 @@ CI 输出与开箱即用的 V50 镜像之间还差：
 
 | 主题 | 上游 | 状态 |
 |------|------|------|
+| **`luci-theme-aurora`** | [eamonxg/luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora) | ✅ 默认启用（feed: `theme_aurora`） |
 | `luci-theme-bootstrap` | openwrt/luci | ✅ 默认启用 |
-| **`luci-theme-aurora`** | [eamonxg/luci-theme-aurora](https://github.com/eamonxg/luci-theme-aurora) | ➕ 需 `add_packages=luci-theme-aurora` |
 | `luci-theme-material` | [openwrt/luci](https://github.com/openwrt/luci) | ➕ 可选 |
 
 ### LuCI 中文 / i18n
 
-⚠️ 当前 `default.config` **未启用** 任何 `luci-i18n-*` 包。如需中文界面，触发 build 时：
+当前 `default.config` 已启用：
 
-```
-add_packages: luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn luci-i18n-frpc-zh-cn
-```
+- ✅ `luci-i18n-frpc-zh-cn`
+- ✅ `luci-i18n-passwall2-zh-cn`
+
+如需更多中文包，触发 build 时 `add_packages: luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn ...`
 
 详细可用 i18n 包列表：`grep '^# CONFIG_PACKAGE_luci-i18n-' config/default.config`
 
