@@ -65,6 +65,22 @@
 构建完成后在 https://github.com/r3zound/openwrt-v50-builder/releases 下载：
 
 - `openwrt-final.img.gz` — 压缩的 rootfs（推荐烧录用）
+
+### 4. 图形化定制（可选）
+
+打开 [`docs/builder.html`](docs/builder.html)（推荐 GitHub Pages 启用后从 `https://r3zound.github.io/openwrt-v50-builder/builder.html` 访问）：
+
+1. 填入一个 **GitHub PAT**（`repo` scope，[一键创建] →）
+3. 勾选要添加的插件（luci-app-* / luci-theme-* / 中文包，约 60 个常用项 + 自定义 textarea）
+4. 点击 **🚀 开始构建**
+
+页面直接调用 `POST /repos/{owner}/{repo}/actions/workflows/build.yml/dispatches`，**无需后端**。Token 仅存在你的浏览器 `localStorage` 里，**永不上传**。
+
+---
+
+## 快速上手 / Quick start
+
+### 1. 在 GitHub 网页触发一次构建
 - `openwrt-final.img` — 原始 rootfs（用于检查）
 - `SHA256SUMS` — 校验和
 
