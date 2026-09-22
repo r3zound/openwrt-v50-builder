@@ -73,6 +73,7 @@
 **功能概览**：
 
 - **5 大分类 · 78 个常用包**：代理（PassWall2/Nikki/OpenClash/HomeProxy/SSR-Plus/Mihomo/Momo/v2rayA/Fchomo/NeKoBox/Daed/HiJpass/UA3F/luci-xray）/ LuCI 应用（27 项）/ 主题（12 项）/ 系统工具（htop/btop/tmux/iperf3 等）/ 中文 i18n（25 项）
+- **中文包自动同步** —— 勾选任何 `luci-app-*` 会自动追加 `luci-i18n-<name>-zh-cn`（基于内置白名单映射表），不需要单独选 i18n 包
 - **每分类全选/全不选** 一键操作
 - **表单自动持久化**（localStorage）—— 刷新页面不丢选项
 - **触发后实时轮询** —— 每 15 秒检查 run 状态，完成自动跳到 release 下载
