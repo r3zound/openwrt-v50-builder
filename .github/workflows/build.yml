@@ -93,6 +93,23 @@ jobs:
           echo "Source root: $(ls openwrt | head -3)"
           cat openwrt/version
 
+      - name: Merge additional feeds + update + install
+        run: |
+          set -e
+          cd openwrt
+
+          # Combine upstream feeds.conf.default with our repo's config/feeds.conf
+          # (passwall2 + luci-theme-aurora third-party feeds).
+          cp feeds.conf.default feeds.conf
+          echo '' >> feeds.conf
+          echo '# --- appended by openwrt-v50-builder (config/feeds.conf) ---' >> feeds.conf
+          grep -v '^#' ../config/feeds.conf | grep -v '^$' >> feeds.conf || true
+          echo '=== feeds.conf ==='
+          cat feeds.conf
+
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
       - name: Apply default config + user inputs
         run: |
           set -e
@@ -121,12 +138,6 @@ jobs:
           grep -c '^CONFIG_PACKAGE_.*=y' .config || true
           echo "=== Target summary ==="
           grep '^CONFIG_TARGET_' .config | grep -v '^#' || true
-
-      - name: Update and install feeds
-        run: |
-          cd openwrt
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
 
       - name: Build (single-threaded, verbose tail)
         run: |
