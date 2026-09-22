@@ -8,6 +8,16 @@
 
 ---
 
+> ## 🚀 在线定制固件(免 PAT)
+>
+> 👉 **<https://r3zound.github.io/openwrt-v50-builder/>**
+>
+> 勾选插件 → 一键复制 inputs 到剪贴板 → 跳到 GitHub Actions 页面点 **Run workflow** 即可触发构建。
+> 整个流程**完全不需要 GitHub token**,GitHub 用你自己的登录态校验权限。
+> 详细使用流程见下方 [「图形化定制」](#4-图形化定制可选) 章节。
+
+---
+
 ## 设备背景 / Target hardware
 
 本项目输出的固件用于**以下部署场景**：
