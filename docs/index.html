@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>openwrt-v50-builder · V50 OpenWrt 固件定制</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f5f5f7; color: #1d1d1f; line-height: 1.5;
+  padding: 24px 16px;
+}
+@media (prefers-color-scheme: dark) {
+  body { background: #1c1c1e; color: #f5f5f7; }
+  .card { background: #2c2c2e !important; border-color: #3a3a3c !important; }
+  a { color: #6aa9ff !important; }
+}
+.container { max-width: 720px; margin: 0 auto; }
+header { text-align: center; padding: 40px 0 24px; }
+header h1 { font-size: 32px; font-weight: 600; margin-bottom: 8px; }
+header p { color: #6e6e73; font-size: 15px; }
+.card {
+  background: #fff; border: 1px solid #d2d2d7; border-radius: 12px;
+  padding: 24px; margin-bottom: 16px; text-align: center;
+}
+.card h2 { font-size: 18px; margin-bottom: 8px; }
+.card p { color: #6e6e73; font-size: 14px; margin-bottom: 16px; }
+.btn {
+  display: inline-block; padding: 10px 20px; border-radius: 8px;
+  background: #0066cc; color: #fff; text-decoration: none; font-size: 15px;
+  font-weight: 500;
+}
+.btn:hover { background: #0077ed; }
+.btn-secondary { background: transparent; color: #0066cc; border: 1px solid #0066cc; margin-left: 8px; }
+ul.docs { list-style: none; text-align: left; }
+ul.docs li { padding: 8px 0; border-bottom: 1px solid #e5e5ea; }
+ul.docs li:last-child { border-bottom: none; }
+ul.docs a { color: #0066cc; text-decoration: none; }
+ul.docs .desc { color: #6e6e73; font-size: 13px; }
+.repo {
+  background: #f5f5f7; border-radius: 8px; padding: 12px; font-size: 13px;
+  font-family: ui-monospace, monospace; text-align: left;
+}
+@media (prefers-color-scheme: dark) { .repo { background: #1c1c1e; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🛠️ openwrt-v50-builder</h1>
+  <p>为 ZTE MU3351 / V50 等中兴系 CPE 设备内置 Android 虚拟机构建 OpenWrt 25.12.5 固件包</p>
+</header>
+
+<div class="card">
+  <h2>🚀 图形化固件定制</h2>
+  <p>勾选要加入的插件 → 一键触发 GitHub Actions 编译</p>
+  <a href="builder.html" class="btn">打开定制页面</a>
+  <a href="https://github.com/r3zound/openwrt-v50-builder" class="btn btn-secondary" target="_blank">GitHub 仓库</a>
+</div>
+
+<div class="card">
+  <h2>📚 文档</h2>
+  <ul class="docs">
+    <li><a href="SKILL.md">SKILL.md</a><div class="desc">完整构建 skill 文档（10 条铁律、避坑指南、命令速查）</div></li>
+    <li><a href="OpenWrt固件构建指南.md">OpenWrt固件构建指南.md</a><div class="desc">详细构建流程 + 验证清单</div></li>
+    <li><a href="OpenWrt固件构建教程_脱敏版.md">OpenWrt固件构建教程_脱敏版.md</a><div class="desc">脱敏版本教程（不含服务器凭证）</div></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>🔗 仓库</h2>
+  <div class="repo">https://github.com/r3zound/openwrt-v50-builder</div>
+</div>
+
+</div>
+</body>
+</html>
