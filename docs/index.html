@@ -14,6 +14,7 @@ body {
 @media (prefers-color-scheme: dark) {
   body { background: #1c1c1e; color: #f5f5f7; }
   .card { background: #2c2c2e !important; border-color: #3a3a3c !important; }
+  .repo, .feat { background: #1c1c1e !important; }
   a { color: #6aa9ff !important; }
 }
 .container { max-width: 720px; margin: 0 auto; }
@@ -26,6 +27,13 @@ header p { color: #6e6e73; font-size: 15px; }
 }
 .card h2 { font-size: 18px; margin-bottom: 8px; }
 .card p { color: #6e6e73; font-size: 14px; margin-bottom: 16px; }
+.feat {
+  text-align: left; background: #f5f5f7; border-radius: 8px;
+  padding: 12px 16px; font-size: 13px; margin: 12px 0 0;
+}
+.feat ul { list-style: none; }
+.feat li { padding: 3px 0; }
+.feat li::before { content: '✓ '; color: #34c759; font-weight: 700; }
 .btn {
   display: inline-block; padding: 10px 20px; border-radius: 8px;
   background: #0066cc; color: #fff; text-decoration: none; font-size: 15px;
@@ -42,7 +50,6 @@ ul.docs .desc { color: #6e6e73; font-size: 13px; }
   background: #f5f5f7; border-radius: 8px; padding: 12px; font-size: 13px;
   font-family: ui-monospace, monospace; text-align: left;
 }
-@media (prefers-color-scheme: dark) { .repo { background: #1c1c1e; } }
 </style>
 </head>
 <body>
@@ -55,17 +62,27 @@ ul.docs .desc { color: #6e6e73; font-size: 13px; }
 
 <div class="card">
   <h2>🚀 图形化固件定制</h2>
-  <p>勾选要加入的插件 → 一键触发 GitHub Actions 编译</p>
+  <p>勾选插件 → 一键触发 GitHub Actions 编译 → 实时查看构建进度</p>
   <a href="builder.html" class="btn">打开定制页面</a>
   <a href="https://github.com/r3zound/openwrt-v50-builder" class="btn btn-secondary" target="_blank">GitHub 仓库</a>
+
+  <div class="feat">
+    <ul>
+      <li><strong>5 大分类 · 78 个常用包</strong>:代理(14) / LuCI 应用(27) / 主题(12) / 系统工具(17) / 中文 i18n(25)</li>
+      <li><strong>自动恢复</strong>:所有勾选自动保存到 localStorage,刷新不丢</li>
+      <li><strong>实时轮询</strong>:触发后每 15s 自动检查 run 状态,完成自动跳到 release 下载</li>
+      <li><strong>历史 Releases</strong>:自动列出最近 5 个 release,一键下载</li>
+      <li><strong>纯前端</strong>:Token 仅存本地,无后端,可托管在任意静态站点</li>
+    </ul>
+  </div>
 </div>
 
 <div class="card">
   <h2>📚 文档</h2>
   <ul class="docs">
-    <li><a href="SKILL.md">SKILL.md</a><div class="desc">完整构建 skill 文档（10 条铁律、避坑指南、命令速查）</div></li>
+    <li><a href="SKILL.md">SKILL.md</a><div class="desc">完整构建 skill 文档(10 条铁律、避坑指南、命令速查)</div></li>
     <li><a href="OpenWrt固件构建指南.md">OpenWrt固件构建指南.md</a><div class="desc">详细构建流程 + 验证清单</div></li>
-    <li><a href="OpenWrt固件构建教程_脱敏版.md">OpenWrt固件构建教程_脱敏版.md</a><div class="desc">脱敏版本教程（不含服务器凭证）</div></li>
+    <li><a href="OpenWrt固件构建教程_脱敏版.md">OpenWrt固件构建教程_脱敏版.md</a><div class="desc">脱敏版本教程(不含服务器凭证)</div></li>
   </ul>
 </div>
 

@@ -6,175 +6,209 @@
 <title>V50 固件定制 · openwrt-v50-builder</title>
 <style>
 :root {
-  --bg: #f5f5f7;
-  --card: #ffffff;
-  --text: #1d1d1f;
-  --muted: #6e6e73;
-  --accent: #0066cc;
-  --accent-hover: #0077ed;
-  --border: #d2d2d7;
-  --success: #34c759;
-  --danger: #ff3b30;
-  --warning: #ff9500;
-  --code-bg: #f5f5f7;
+  --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --muted: #6e6e73;
+  --accent: #0066cc; --accent-hover: #0077ed; --border: #d2d2d7;
+  --success: #34c759; --danger: #ff3b30; --warning: #ff9500; --code-bg: #f5f5f7;
+  --proxy: #5856d6; --theme: #ff2d55; --i18n: #ff9500;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1c1c1e;
-    --card: #2c2c2e;
-    --text: #f5f5f7;
-    --muted: #98989d;
-    --border: #3a3a3c;
-    --code-bg: #1c1c1e;
+    --bg: #1c1c1e; --card: #2c2c2e; --text: #f5f5f7; --muted: #98989d;
+    --border: #3a3a3c; --code-bg: #1c1c1e;
   }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-  padding: 16px;
+  background: var(--bg); color: var(--text); line-height: 1.5; padding: 16px;
 }
-.container { max-width: 880px; margin: 0 auto; }
+.container { max-width: 960px; margin: 0 auto; }
 header { text-align: center; padding: 24px 0 16px; }
 header h1 { font-size: 28px; font-weight: 600; margin-bottom: 6px; }
 header p { color: var(--muted); font-size: 14px; }
+
+/* ---------- Card ---------- */
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; margin-bottom: 16px;
 }
 .card h2 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 16px; font-weight: 600; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
 }
 .card h2 .step {
-  background: var(--accent);
-  color: white;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
+  background: var(--accent); color: white; width: 22px; height: 22px;
+  border-radius: 50%; display: inline-flex; align-items: center;
+  justify-content: center; font-size: 12px; font-weight: 700;
 }
 .card .help { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
-input[type=text], input[type=password], textarea {
-  width: 100%;
-  padding: 8px 10px;
-  background: var(--code-bg);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
-  font-size: 13px;
+.card .help code {
+  background: var(--code-bg); padding: 1px 5px;
+  border-radius: 3px; font-size: 12px;
+}
+
+/* ---------- Form controls ---------- */
+input[type=text], input[type=password], textarea, select {
+  width: 100%; padding: 8px 10px; background: var(--code-bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px;
+  font-family: ui-monospace, "Cascadia Code", "Consolas", monospace; font-size: 13px;
 }
 textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row > * { flex: 1; min-width: 200px; }
+
+/* ---------- Plugin grid ---------- */
+.category {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.category:first-of-type { margin-top: 4px; padding-top: 0; border-top: none; }
+.category-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; flex-wrap: wrap; gap: 6px;
+}
+.category-head h3 {
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.category-head h3 .badge {
+  display: inline-block; padding: 1px 6px; font-size: 10px;
+  border-radius: 3px; background: var(--accent); color: white;
+  margin-left: 6px; vertical-align: middle;
+}
+.category-head h3 .badge.proxy { background: var(--proxy); }
+.category-head h3 .badge.theme { background: var(--theme); }
+.category-head h3 .badge.i18n { background: var(--i18n); }
+.category-head .actions-mini {
+  display: flex; gap: 6px;
+}
+.btn-mini {
+  background: transparent; color: var(--muted); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 8px; font-size: 11px; cursor: pointer;
+}
+.btn-mini:hover { background: var(--code-bg); color: var(--text); }
+
 .pkg-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 8px 12px;
-  margin-top: 8px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px 10px;
 }
 .pkg-grid label {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  font-size: 13px;
-  padding: 4px 6px;
-  border-radius: 4px;
-  cursor: pointer;
+  display: flex; align-items: flex-start; gap: 6px; font-size: 13px;
+  padding: 5px 6px; border-radius: 4px; cursor: pointer; transition: background 0.1s;
 }
 .pkg-grid label:hover { background: var(--code-bg); }
 .pkg-grid input[type=checkbox] { margin-top: 2px; flex-shrink: 0; }
-.pkg-grid .name { font-family: ui-monospace, monospace; font-size: 12px; color: var(--accent); }
-.pkg-grid .desc { color: var(--muted); font-size: 12px; }
-.pkg-default { opacity: 0.6; }
-.pkg-default input { accent-color: var(--success); }
-.category { margin-top: 12px; }
-.category h3 {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.pkg-grid .name {
+  font-family: ui-monospace, monospace; font-size: 12px;
+  color: var(--accent); display: block;
 }
+.pkg-grid .desc { color: var(--muted); font-size: 12px; display: block; margin-top: 1px; }
+.pkg-default { opacity: 0.55; }
+.pkg-default input { accent-color: var(--success); }
+.pkg-default .name { color: var(--success); }
+.pkg-required .name::after {
+  content: ' 必装'; color: var(--danger); font-size: 10px;
+}
+
+/* ---------- Buttons ---------- */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 18px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: var(--accent);
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 18px; border: 1px solid transparent; border-radius: 8px;
+  background: var(--accent); color: white; font-size: 14px;
+  font-weight: 500; cursor: pointer; transition: background 0.15s;
 }
 .btn:hover { background: var(--accent-hover); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-secondary {
-  background: transparent;
-  color: var(--text);
-  border-color: var(--border);
+  background: transparent; color: var(--text); border-color: var(--border);
 }
 .btn-secondary:hover { background: var(--code-bg); }
+.btn-danger { background: var(--danger); }
+.btn-danger:hover { background: #ff5247; }
+.btn-success { background: var(--success); }
+.btn-success:hover { background: #30b350; }
 .actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+/* ---------- Status box ---------- */
 .status {
-  padding: 12px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-top: 12px;
-  display: none;
+  padding: 12px 14px; border-radius: 8px; font-size: 13px;
+  margin-top: 12px; display: none; word-break: break-word;
 }
 .status.show { display: block; }
 .status.success { background: rgba(52,199,89,0.15); border-left: 3px solid var(--success); }
 .status.error { background: rgba(255,59,48,0.15); border-left: 3px solid var(--danger); }
 .status.info { background: rgba(0,102,204,0.15); border-left: 3px solid var(--accent); }
 .status code {
-  background: var(--code-bg);
-  padding: 1px 5px;
-  border-radius: 3px;
-  font-size: 12px;
+  background: var(--code-bg); padding: 1px 5px;
+  border-radius: 3px; font-size: 12px;
 }
-a { color: var(--accent); }
-.row { display: flex; gap: 12px; flex-wrap: wrap; }
-.row > * { flex: 1; min-width: 200px; }
-.checkbox-list { display: flex; flex-direction: column; gap: 4px; }
+.status pre {
+  background: var(--code-bg); padding: 8px;
+  border-radius: 4px; font-size: 11px; overflow-x: auto;
+  margin-top: 6px;
+}
+
 .summary-box {
-  background: var(--code-bg);
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-family: ui-monospace, monospace;
-  font-size: 12px;
-  margin-top: 8px;
-  word-break: break-all;
+  background: var(--code-bg); padding: 10px 12px; border-radius: 6px;
+  font-family: ui-monospace, monospace; font-size: 12px;
+  margin-top: 8px; word-break: break-all; white-space: pre-wrap;
 }
-details { margin-top: 8px; }
-summary { cursor: pointer; font-size: 13px; color: var(--muted); user-select: none; }
+
+a { color: var(--accent); }
 .tag {
-  display: inline-block;
-  padding: 1px 6px;
-  font-size: 11px;
-  border-radius: 3px;
-  background: var(--accent);
-  color: white;
-  margin-left: 4px;
+  display: inline-block; padding: 1px 6px; font-size: 11px;
+  border-radius: 3px; background: var(--accent); color: white; margin-left: 4px;
 }
 .tag.default { background: var(--success); }
-.tag.optional { background: var(--warning); }
+.tag.required { background: var(--danger); }
+.tag.proxy { background: var(--proxy); }
+.tag.theme { background: var(--theme); }
+.tag.i18n { background: var(--i18n); }
+
+/* ---------- Release history ---------- */
+.releases { margin-top: 12px; }
+.release-item {
+  padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+  margin-bottom: 6px; background: var(--code-bg);
+}
+.release-item .tag-row {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.release-item .tag-name {
+  font-family: ui-monospace, monospace; font-size: 13px;
+  font-weight: 600; color: var(--accent);
+}
+.release-item .tag-name.pre { color: var(--warning); }
+.release-item .meta { font-size: 12px; color: var(--muted); }
+.release-item .files { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.release-item .files a { margin-right: 8px; }
+
+.progress-bar {
+  height: 4px; background: var(--code-bg); border-radius: 2px;
+  overflow: hidden; margin-top: 4px;
+}
+.progress-bar > div {
+  height: 100%; background: var(--accent); transition: width 0.3s;
+}
+
+details { margin-top: 8px; }
+summary { cursor: pointer; font-size: 13px; color: var(--muted); user-select: none; }
+
 footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px; }
+
+/* ---------- Nav pills (sticky) ---------- */
+.nav-pills {
+  position: sticky; top: 8px; z-index: 10;
+  background: var(--bg); padding: 6px 0; margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+}
+.nav-pills a {
+  padding: 4px 10px; border-radius: 12px; font-size: 12px;
+  background: var(--card); border: 1px solid var(--border);
+  text-decoration: none; color: var(--muted);
+}
+.nav-pills a:hover { background: var(--code-bg); color: var(--text); }
 </style>
 </head>
 <body>
@@ -186,23 +220,35 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
   <p>openwrt-v50-builder · 勾选插件 → 点击构建 → 自动触发 GitHub Actions 编译 OpenWrt 25.12.5</p>
 </header>
 
+<nav class="nav-pills">
+  <a href="#step-1">① 认证</a>
+  <a href="#step-2">② 仓库</a>
+  <a href="#step-3">③ 插件</a>
+  <a href="#step-4">④ 移除</a>
+  <a href="#step-5">⑤ Release</a>
+  <a href="#step-6">⑥ 触发</a>
+  <a href="#step-7">⑦ 历史</a>
+</nav>
+
 <!-- ============ 步骤 1: 认证 ============ -->
-<div class="card">
+<div class="card" id="step-1">
   <h2><span class="step">1</span> GitHub 认证</h2>
   <p class="help">填入一个 <strong>Personal Access Token (PAT)</strong>，需要 <code>repo</code> 权限。
-    Token 仅保存在你浏览器本地（<code>localStorage</code>），不会上传任何服务器。
+    Token 仅保存在你浏览器本地 (<code>localStorage</code>)，不会上传任何服务器。
     <a href="https://github.com/settings/tokens/new?scopes=repo&description=V50+Builder" target="_blank">创建新 Token →</a></p>
   <input type="password" id="pat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
   <div class="actions" style="margin-top:8px">
     <button class="btn btn-secondary" id="save-pat">保存 Token</button>
     <button class="btn btn-secondary" id="clear-pat">清除</button>
+    <button class="btn btn-secondary" id="test-pat" disabled>测试连接</button>
     <span id="pat-status" style="font-size:13px;color:var(--muted);align-self:center"></span>
   </div>
 </div>
 
 <!-- ============ 步骤 2: 仓库配置 ============ -->
-<div class="card">
+<div class="card" id="step-2">
   <h2><span class="step">2</span> 仓库与目标</h2>
+  <p class="help">默认已填好,无需改动即可触发本仓库的构建。Fork 后想触发自己 fork 仓库的构建,改下面三项。</p>
   <div class="row">
     <div>
       <label style="font-size:13px;color:var(--muted)">仓库 owner</label>
@@ -219,111 +265,197 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
   </div>
 </div>
 
-<!-- ============ 步骤 3: 选择额外包 ============ -->
-<div class="card">
+<!-- ============ 步骤 3: 选择插件 ============ -->
+<div class="card" id="step-3">
   <h2><span class="step">3</span> 选择要 <strong style="color:var(--accent)">添加</strong> 的插件</h2>
-  <p class="help">以下包默认 <strong>未启用</strong>。勾选后会加到 <code>add_packages</code> 输入里，并入镜像。<br>
-    <span class="tag default">已默认</span> = 已经在 <code>default.config</code> 里，可用作对照（不可取消）。</p>
+  <p class="help">默认 config 已含 <span class="tag default">frpc / passwall2 / firewall / aurora / 中文基础包</span>。这里选的是要在默认基础上<strong>额外添加</strong>的包。
+    所有选择自动保存到 localStorage(刷新页面不丢)。</p>
+
+  <!-- 代理插件分组 -->
+  <div class="category">
+    <div class="category-head">
+      <h3>代理 / 反审查 <span class="badge proxy">Proxy</span></h3>
+      <div class="actions-mini">
+        <button class="btn-mini" data-cat="proxy" data-act="all">全选</button>
+        <button class="btn-mini" data-cat="proxy" data-act="none">全不选</button>
+      </div>
+    </div>
+    <div class="pkg-grid">
+      <label><input type="checkbox" value="luci-app-passwall2"><span><span class="name">luci-app-passwall2</span><span class="desc">PassWall2 · v2ray/ss/trojan (默认已启用,勾选会强制重新启用)</span></span></label>
+      <label><input type="checkbox" value="luci-app-openclash"><span><span class="name">luci-app-openclash</span><span class="desc">OpenClash · Clash 图形化</span></span></label>
+      <label><input type="checkbox" value="luci-app-nikki"><span><span class="name">luci-app-nikki</span><span class="desc">Nikki · Hiddify 兼容</span></span></label>
+      <label><input type="checkbox" value="luci-app-homeproxy"><span><span class="name">luci-app-homeproxy</span><span class="desc">HomeProxy · sing-box 透明代理</span></span></label>
+      <label><input type="checkbox" value="luci-app-ssr-plus"><span><span class="name">luci-app-ssr-plus</span><span class="desc">SSR-Plus+ · 通用代理</span></span></label>
+      <label><input type="checkbox" value="luci-app-mihomo"><span><span class="name">luci-app-mihomo</span><span class="desc">Mihomo · Clash Meta 内核</span></span></label>
+      <label><input type="checkbox" value="luci-app-momo"><span><span class="name">luci-app-momo</span><span class="desc">Momo · Mihomo 图形化</span></span></label>
+      <label><input type="checkbox" value="luci-app-v2raya"><span><span class="name">luci-app-v2raya</span><span class="desc">v2rayA · 透明代理</span></span></label>
+      <label><input type="checkbox" value="luci-app-fchomo"><span><span class="name">luci-app-fchomo</span><span class="desc">FullCombo Shark!</span></span></label>
+      <label><input type="checkbox" value="luci-app-nekobox"><span><span class="name">luci-app-nekobox</span><span class="desc">NeKoBox · sing-box</span></span></label>
+      <label><input type="checkbox" value="luci-app-daed"><span><span class="name">luci-app-daed</span><span class="desc">Daed · Dae 图形化</span></span></label>
+      <label><input type="checkbox" value="luci-app-hijpass"><span><span class="name">luci-app-hijpass</span><span class="desc">HiJpass · 分流</span></span></label>
+      <label><input type="checkbox" value="luci-app-ua3f"><span><span class="name">luci-app-ua3f</span><span class="desc">UA3F · User-Agent 伪装</span></span></label>
+      <label><input type="checkbox" value="luci-app-xray"><span><span class="name">luci-app-xray</span><span class="desc">luci-xray · xray 面板</span></span></label>
+    </div>
+  </div>
 
   <!-- LuCI 应用 -->
   <div class="category">
-    <h3>LuCI 应用（Web 界面插件）</h3>
+    <div class="category-head">
+      <h3>LuCI 应用 <span class="badge">Apps</span></h3>
+      <div class="actions-mini">
+        <button class="btn-mini" data-cat="apps" data-act="all">全选</button>
+        <button class="btn-mini" data-cat="apps" data-act="none">全不选</button>
+      </div>
+    </div>
     <div class="pkg-grid">
-      <label><input type="checkbox" value="luci-app-passwall2"><span><span class="name">luci-app-passwall2</span><br><span class="desc">代理客户端（v2ray/ss/trojan 等）</span></span></label>
-      <label><input type="checkbox" value="luci-app-nikki"><span><span class="name">luci-app-nikki</span><br><span class="desc">Hiddify 兼容的代理</span></span></label>
-      <label><input type="checkbox" value="luci-app-ua3f"><span><span class="name">luci-app-ua3f</span><br><span class="desc">UA 伪装</span></span></label>
-      <label><input type="checkbox" value="luci-app-mihomo"><span><span class="name">luci-app-mihomo</span><br><span class="desc">Clash Meta 内核</span></span></label>
-      <label><input type="checkbox" value="luci-app-openclash"><span><span class="name">luci-app-openclash</span><br><span class="desc">OpenClash 图形化</span></span></label>
-      <label><input type="checkbox" value="luci-app-ssr-plus"><span><span class="name">luci-app-ssr-plus</span><br><span class="desc">ShadowsocksR Plus+</span></span></label>
-      <label><input type="checkbox" value="luci-app-homeproxy"><span><span class="name">luci-app-homeproxy</span><br><span class="desc">sing-box 透明代理</span></span></label>
-      <label><input type="checkbox" value="luci-app-v2raya"><span><span class="name">luci-app-v2raya</span><br><span class="desc">v2rayA 透明代理</span></span></label>
-      <label><input type="checkbox" value="luci-app-ddns"><span><span class="name">luci-app-ddns</span><br><span class="desc">动态域名解析</span></span></label>
-      <label><input type="checkbox" value="luci-app-samba4"><span><span class="name">luci-app-samba4</span><br><span class="desc">samba 文件共享</span></span></label>
-      <label><input type="checkbox" value="luci-app-transmission"><span><span class="name">luci-app-transmission</span><br><span class="desc">BT 下载</span></span></label>
-      <label><input type="checkbox" value="luci-app-qbittorrent"><span><span class="name">luci-app-qbittorrent</span><br><span class="desc">qBittorrent 下载</span></span></label>
-      <label><input type="checkbox" value="luci-app-adguardhome"><span><span class="name">luci-app-adguardhome</span><br><span class="desc">DNS 过滤 / 广告拦截</span></span></label>
-      <label><input type="checkbox" value="luci-app-smartdns"><span><span class="name">luci-app-smartdns</span><br><span class="desc">智能 DNS</span></span></label>
-      <label><input type="checkbox" value="luci-app-mosdns"><span><span class="name">luci-app-mosdns</span><br><span class="desc">DNS 转发分流</span></span></label>
-      <label><input type="checkbox" value="luci-app-zerotier"><span><span class="name">luci-app-zerotier</span><br><span class="desc">ZeroTier 虚拟组网</span></span></label>
-      <label><input type="checkbox" value="luci-app-tailscale"><span><span class="name">luci-app-tailscale</span><br><span class="desc">Tailscale 虚拟组网</span></span></label>
-      <label><input type="checkbox" value="luci-app-wireguard"><span><span class="name">luci-app-wireguard</span><br><span class="desc">WireGuard VPN</span></span></label>
-      <label><input type="checkbox" value="luci-app-ttyd"><span><span class="name">luci-app-ttyd</span><br><span class="desc">网页版终端</span></span></label>
-      <label><input type="checkbox" value="luci-app-filebrowser"><span><span class="name">luci-app-filebrowser</span><br><span class="desc">文件管理器</span></span></label>
-      <label><input type="checkbox" value="luci-app-aliyundrive-webdav"><span><span class="name">luci-app-aliyundrive-webdav</span><br><span class="desc">阿里云盘 WebDAV</span></span></label>
-      <label><input type="checkbox" value="luci-app-diskman"><span><span class="name">luci-app-diskman</span><br><span class="desc">磁盘分区管理</span></span></label>
-      <label><input type="checkbox" value="luci-app-partexp"><span><span class="name">luci-app-partexp</span><br><span class="desc">分区扩容</span></span></label>
-      <label><input type="checkbox" value="luci-app-vlmcsd"><span><span class="name">luci-app-vlmcsd</span><br><span class="desc">KMS 激活服务器</span></span></label>
-      <label><input type="checkbox" value="luci-app-netdata"><span><span class="name">luci-app-netdata</span><br><span class="desc">系统性能监控</span></span></label>
-      <label><input type="checkbox" value="luci-app-nlbwmon"><span><span class="name">luci-app-nlbwmon</span><br><span class="desc">实时流量监控</span></span></label>
-      <label><input type="checkbox" value="luci-app-statistics"><span><span class="name">luci-app-statistics</span><br><span class="desc">collectd 系统统计</span></span></label>
-      <label><input type="checkbox" value="luci-app-dockerman"><span><span class="name">luci-app-dockerman</span><br><span class="desc">Docker Compose 图形化</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-app-frpc" checked disabled><span><span class="name">luci-app-frpc</span><span class="tag default">已默认</span><br><span class="desc">frp 客户端</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-app-firewall" checked disabled><span><span class="name">luci-app-firewall</span><span class="tag default">已默认</span><br><span class="desc">防火墙管理</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-app-package-manager" checked disabled><span><span class="name">luci-app-package-manager</span><span class="tag default">已默认</span><br><span class="desc">软件包管理</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-app-attendedsysupgrade" checked disabled><span><span class="name">luci-app-attendedsysupgrade</span><span class="tag default">已默认</span><br><span class="desc">OTA 升级</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-app-frpc" checked disabled><span><span class="name">luci-app-frpc</span><span class="tag default">已默认</span><span class="desc">frp 内网穿透</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-app-firewall" checked disabled><span><span class="name">luci-app-firewall</span><span class="tag default">已默认</span><span class="desc">防火墙管理</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-app-package-manager" checked disabled><span><span class="name">luci-app-package-manager</span><span class="tag default">已默认</span><span class="desc">软件包管理</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-app-attendedsysupgrade" checked disabled><span><span class="name">luci-app-attendedsysupgrade</span><span class="tag default">已默认</span><span class="desc">OTA 升级</span></span></label>
+      <label><input type="checkbox" value="luci-app-ddns"><span><span class="name">luci-app-ddns</span><span class="desc">动态域名解析</span></span></label>
+      <label><input type="checkbox" value="luci-app-samba4"><span><span class="name">luci-app-samba4</span><span class="desc">samba 文件共享</span></span></label>
+      <label><input type="checkbox" value="luci-app-transmission"><span><span class="name">luci-app-transmission</span><span class="desc">BT 下载</span></span></label>
+      <label><input type="checkbox" value="luci-app-qbittorrent"><span><span class="name">luci-app-qbittorrent</span><span class="desc">qBittorrent 下载</span></span></label>
+      <label><input type="checkbox" value="luci-app-aria2"><span><span class="name">luci-app-aria2</span><span class="desc">Aria2 下载</span></span></label>
+      <label><input type="checkbox" value="luci-app-adguardhome"><span><span class="name">luci-app-adguardhome</span><span class="desc">DNS 过滤 / 广告拦截</span></span></label>
+      <label><input type="checkbox" value="luci-app-smartdns"><span><span class="name">luci-app-smartdns</span><span class="desc">智能 DNS</span></span></label>
+      <label><input type="checkbox" value="luci-app-mosdns"><span><span class="name">luci-app-mosdns</span><span class="desc">DNS 转发分流</span></span></label>
+      <label><input type="checkbox" value="luci-app-zerotier"><span><span class="name">luci-app-zerotier</span><span class="desc">ZeroTier 虚拟组网</span></span></label>
+      <label><input type="checkbox" value="luci-app-tailscale"><span><span class="name">luci-app-tailscale</span><span class="desc">Tailscale 虚拟组网</span></span></label>
+      <label><input type="checkbox" value="luci-app-wireguard"><span><span class="name">luci-app-wireguard</span><span class="desc">WireGuard VPN</span></span></label>
+      <label><input type="checkbox" value="luci-app-ttyd"><span><span class="name">luci-app-ttyd</span><span class="desc">网页版终端</span></span></label>
+      <label><input type="checkbox" value="luci-app-filebrowser"><span><span class="name">luci-app-filebrowser</span><span class="desc">文件管理器</span></span></label>
+      <label><input type="checkbox" value="luci-app-aliyundrive-webdav"><span><span class="name">luci-app-aliyundrive-webdav</span><span class="desc">阿里云盘 WebDAV</span></span></label>
+      <label><input type="checkbox" value="luci-app-diskman"><span><span class="name">luci-app-diskman</span><span class="desc">磁盘分区管理</span></span></label>
+      <label><input type="checkbox" value="luci-app-partexp"><span><span class="name">luci-app-partexp</span><span class="desc">分区扩容</span></span></label>
+      <label><input type="checkbox" value="luci-app-vlmcsd"><span><span class="name">luci-app-vlmcsd</span><span class="desc">KMS 激活服务器</span></span></label>
+      <label><input type="checkbox" value="luci-app-netdata"><span><span class="name">luci-app-netdata</span><span class="desc">系统性能监控</span></span></label>
+      <label><input type="checkbox" value="luci-app-nlbwmon"><span><span class="name">luci-app-nlbwmon</span><span class="desc">实时流量监控</span></span></label>
+      <label><input type="checkbox" value="luci-app-statistics"><span><span class="name">luci-app-statistics</span><span class="desc">collectd 系统统计</span></span></label>
+      <label><input type="checkbox" value="luci-app-dockerman"><span><span class="name">luci-app-dockerman</span><span class="desc">Docker Compose 图形化</span></span></label>
+      <label><input type="checkbox" value="luci-app-rclone"><span><span class="name">luci-app-rclone</span><span class="desc">rclone 网盘挂载</span></span></label>
+      <label><input type="checkbox" value="luci-app-haproxy-tcp"><span><span class="name">luci-app-haproxy-tcp</span><span class="desc">HAProxy TCP 负载均衡</span></span></label>
     </div>
   </div>
 
   <!-- LuCI 主题 -->
   <div class="category">
-    <h3>LuCI 主题（Web UI 外观）</h3>
+    <div class="category-head">
+      <h3>LuCI 主题 <span class="badge theme">Themes</span></h3>
+      <div class="actions-mini">
+        <button class="btn-mini" data-cat="themes" data-act="all">全选</button>
+        <button class="btn-mini" data-cat="themes" data-act="none">全不选</button>
+      </div>
+    </div>
     <div class="pkg-grid">
-      <label class="pkg-default"><input type="checkbox" value="luci-theme-aurora" checked disabled><span><span class="name">luci-theme-aurora</span><span class="tag default">已默认</span><br><span class="desc">Aurora 主题（已默认启用）</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-theme-bootstrap" checked disabled><span><span class="name">luci-theme-bootstrap</span><span class="tag default">已默认</span><br><span class="desc">Bootstrap 主题（备用）</span></span></label>
-      <label><input type="checkbox" value="luci-theme-argon"><span><span class="name">luci-theme-argon</span><br><span class="desc">Argon 主题</span></span></label>
-      <label><input type="checkbox" value="luci-theme-material"><span><span class="name">luci-theme-material</span><br><span class="desc">Material Design</span></span></label>
-      <label><input type="checkbox" value="luci-theme-shadcn"><span><span class="name">luci-theme-shadcn</span><br><span class="desc">Shadcn UI 风格</span></span></label>
-      <label><input type="checkbox" value="luci-theme-kucat"><span><span class="name">luci-theme-kucat</span><br><span class="desc">KuCat 主题</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-theme-aurora" checked disabled><span><span class="name">luci-theme-aurora</span><span class="tag default">已默认</span><span class="desc">Aurora · 现代风</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-theme-bootstrap" checked disabled><span><span class="name">luci-theme-bootstrap</span><span class="tag default">已默认</span><span class="desc">Bootstrap · 备用</span></span></label>
+      <label><input type="checkbox" value="luci-theme-argon"><span><span class="name">luci-theme-argon</span><span class="desc">Argon · 经典美</span></span></label>
+      <label><input type="checkbox" value="luci-theme-material"><span><span class="name">luci-theme-material</span><span class="desc">Material Design</span></span></label>
+      <label><input type="checkbox" value="luci-theme-shadcn"><span><span class="name">luci-theme-shadcn</span><span class="desc">Shadcn UI 风格</span></span></label>
+      <label><input type="checkbox" value="luci-theme-kucat"><span><span class="name">luci-theme-kucat</span><span class="desc">KuCat · 卡通风</span></span></label>
+      <label><input type="checkbox" value="luci-theme-alpha"><span><span class="name">luci-theme-alpha</span><span class="desc">Alpha · 极简风</span></span></label>
+      <label><input type="checkbox" value="luci-theme-spectra"><span><span class="name">luci-theme-spectra</span><span class="desc">Spectra · 渐变风</span></span></label>
+      <label><input type="checkbox" value="luci-theme-lightblue"><span><span class="name">luci-theme-lightblue</span><span class="desc">Lightblue · 蓝色调</span></span></label>
+      <label><input type="checkbox" value="luci-theme-openwrt"><span><span class="name">luci-theme-openwrt</span><span class="desc">OpenWrt 官方</span></span></label>
+      <label><input type="checkbox" value="luci-theme-openwrt-2020"><span><span class="name">luci-theme-openwrt-2020</span><span class="desc">OpenWrt 2020</span></span></label>
+      <label><input type="checkbox" value="luci-theme-footstrap"><span><span class="name">luci-theme-footstrap</span><span class="desc">Footstrap</span></span></label>
     </div>
   </div>
 
-  <!-- 中文 i18n 包 -->
+  <!-- 系统工具 -->
   <div class="category">
-    <h3>中文语言包（luci-i18n-*-zh-cn）</h3>
+    <div class="category-head">
+      <h3>系统工具 <span class="badge">Utils</span></h3>
+      <div class="actions-mini">
+        <button class="btn-mini" data-cat="utils" data-act="all">全选</button>
+        <button class="btn-mini" data-cat="utils" data-act="none">全不选</button>
+      </div>
+    </div>
     <div class="pkg-grid">
-      <label class="pkg-default"><input type="checkbox" value="luci-i18n-base-zh-cn" checked disabled><span><span class="name">luci-i18n-base-zh-cn</span><span class="tag default">基础中文</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-i18n-firewall-zh-cn" checked disabled><span><span class="name">luci-i18n-firewall-zh-cn</span><span class="tag default">防火墙</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-i18n-frpc-zh-cn" checked disabled><span><span class="name">luci-i18n-frpc-zh-cn</span><span class="tag default">frpc</span></span></label>
-      <label class="pkg-default"><input type="checkbox" value="luci-i18n-passwall2-zh-cn" checked disabled><span><span class="name">luci-i18n-passwall2-zh-cn</span><span class="tag default">PassWall2</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-nikki-zh-cn"><span><span class="name">luci-i18n-nikki-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-ua3f-zh-cn"><span><span class="name">luci-i18n-ua3f-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-mihomo-zh-cn"><span><span class="name">luci-i18n-mihomo-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-openclash-zh-cn"><span><span class="name">luci-i18n-openclash-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-homeproxy-zh-cn"><span><span class="name">luci-i18n-homeproxy-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-ssr-plus-zh-cn"><span><span class="name">luci-i18n-ssr-plus-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-ddns-zh-cn"><span><span class="name">luci-i18n-ddns-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-samba4-zh-cn"><span><span class="name">luci-i18n-samba4-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-adguardhome-zh-cn"><span><span class="name">luci-i18n-adguardhome-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-smartdns-zh-cn"><span><span class="name">luci-i18n-smartdns-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-mosdns-zh-cn"><span><span class="name">luci-i18n-mosdns-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-zerotier-zh-cn"><span><span class="name">luci-i18n-zerotier-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-tailscale-zh-cn"><span><span class="name">luci-i18n-tailscale-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-wireguard-zh-cn"><span><span class="name">luci-i18n-wireguard-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-ttyd-zh-cn"><span><span class="name">luci-i18n-ttyd-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-diskman-zh-cn"><span><span class="name">luci-i18n-diskman-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-vlmcsd-zh-cn"><span><span class="name">luci-i18n-vlmcsd-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-dockerman-zh-cn"><span><span class="name">luci-i18n-dockerman-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-netdata-zh-cn"><span><span class="name">luci-i18n-netdata-zh-cn</span></span></label>
-      <label><input type="checkbox" value="luci-i18n-statistics-zh-cn"><span><span class="name">luci-i18n-statistics-zh-cn</span></span></label>
+      <label><input type="checkbox" value="htop"><span><span class="name">htop</span><span class="desc">进程监控</span></span></label>
+      <label><input type="checkbox" value="btop"><span><span class="name">btop</span><span class="desc">更美观的性能监控</span></span></label>
+      <label><input type="checkbox" value="tmux"><span><span class="name">tmux</span><span class="desc">终端复用</span></span></label>
+      <label><input type="checkbox" value="screen"><span><span class="name">screen</span><span class="desc">后台会话</span></span></label>
+      <label><input type="checkbox" value="curl"><span><span class="name">curl</span><span class="desc">命令行下载</span></span></label>
+      <label><input type="checkbox" value="wget"><span><span class="name">wget</span><span class="desc">命令行下载</span></span></label>
+      <label><input type="checkbox" value="nano"><span><span class="name">nano</span><span class="desc">简单编辑器</span></span></label>
+      <label><input type="checkbox" value="vim"><span><span class="name">vim</span><span class="desc">经典编辑器</span></span></label>
+      <label><input type="checkbox" value="git"><span><span class="name">git</span><span class="desc">版本控制</span></span></label>
+      <label><input type="checkbox" value="auto-core"><span><span class="name">auto-core</span><span class="desc">CPU 调度优化</span></span></label>
+      <label><input type="checkbox" value="automount"><span><span class="name">automount</span><span class="desc">自动挂载 USB</span></span></label>
+      <label><input type="checkbox" value="block-mount"><span><span class="name">block-mount</span><span class="desc">块设备挂载</span></span></label>
+      <label><input type="checkbox" value="irqbalance"><span><span class="name">irqbalance</span><span class="desc">中断均衡</span></span></label>
+      <label><input type="checkbox" value="sysinfo"><span><span class="name">sysinfo</span><span class="desc">硬件信息 luci</span></span></label>
+      <label><input type="checkbox" value="ttyd"><span><span class="name">ttyd</span><span class="desc">网页终端(无 luci)</span></span></label>
+      <label><input type="checkbox" value="iperf3"><span><span class="name">iperf3</span><span class="desc">网速测试</span></span></label>
+      <label><input type="checkbox" value="speedtest-web"><span><span class="name">speedtest-web</span><span class="desc">网页测速</span></span></label>
+    </div>
+  </div>
+
+  <!-- 中文语言包 -->
+  <div class="category">
+    <div class="category-head">
+      <h3>中文语言包 <span class="badge i18n">i18n</span></h3>
+      <div class="actions-mini">
+        <button class="btn-mini" data-cat="i18n" data-act="all">全选</button>
+        <button class="btn-mini" data-cat="i18n" data-act="none">全不选</button>
+      </div>
+    </div>
+    <div class="pkg-grid">
+      <label class="pkg-default"><input type="checkbox" value="luci-i18n-base-zh-cn" checked disabled><span><span class="name">luci-i18n-base-zh-cn</span><span class="tag default">已默认</span><span class="desc">基础中文</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-i18n-firewall-zh-cn" checked disabled><span><span class="name">luci-i18n-firewall-zh-cn</span><span class="tag default">已默认</span><span class="desc">防火墙</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-i18n-frpc-zh-cn" checked disabled><span><span class="name">luci-i18n-frpc-zh-cn</span><span class="tag default">已默认</span><span class="desc">frpc</span></span></label>
+      <label class="pkg-default"><input type="checkbox" value="luci-i18n-passwall2-zh-cn" checked disabled><span><span class="name">luci-i18n-passwall2-zh-cn</span><span class="tag default">已默认</span><span class="desc">PassWall2</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-nikki-zh-cn"><span><span class="name">luci-i18n-nikki-zh-cn</span><span class="desc">Nikki</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-ua3f-zh-cn"><span><span class="name">luci-i18n-ua3f-zh-cn</span><span class="desc">UA3F</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-mihomo-zh-cn"><span><span class="name">luci-i18n-mihomo-zh-cn</span><span class="desc">Mihomo</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-openclash-zh-cn"><span><span class="name">luci-i18n-openclash-zh-cn</span><span class="desc">OpenClash</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-homeproxy-zh-cn"><span><span class="name">luci-i18n-homeproxy-zh-cn</span><span class="desc">HomeProxy</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-ssr-plus-zh-cn"><span><span class="name">luci-i18n-ssr-plus-zh-cn</span><span class="desc">SSR-Plus</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-ddns-zh-cn"><span><span class="name">luci-i18n-ddns-zh-cn</span><span class="desc">DDNS</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-samba4-zh-cn"><span><span class="name">luci-i18n-samba4-zh-cn</span><span class="desc">Samba</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-adguardhome-zh-cn"><span><span class="name">luci-i18n-adguardhome-zh-cn</span><span class="desc">AdGuardHome</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-smartdns-zh-cn"><span><span class="name">luci-i18n-smartdns-zh-cn</span><span class="desc">SmartDNS</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-mosdns-zh-cn"><span><span class="name">luci-i18n-mosdns-zh-cn</span><span class="desc">MosDNS</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-zerotier-zh-cn"><span><span class="name">luci-i18n-zerotier-zh-cn</span><span class="desc">ZeroTier</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-tailscale-zh-cn"><span><span class="name">luci-i18n-tailscale-zh-cn</span><span class="desc">Tailscale</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-wireguard-zh-cn"><span><span class="name">luci-i18n-wireguard-zh-cn</span><span class="desc">WireGuard</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-ttyd-zh-cn"><span><span class="name">luci-i18n-ttyd-zh-cn</span><span class="desc">ttyd</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-diskman-zh-cn"><span><span class="name">luci-i18n-diskman-zh-cn</span><span class="desc">Diskman</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-vlmcsd-zh-cn"><span><span class="name">luci-i18n-vlmcsd-zh-cn</span><span class="desc">vlmcsd</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-dockerman-zh-cn"><span><span class="name">luci-i18n-dockerman-zh-cn</span><span class="desc">Dockerman</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-netdata-zh-cn"><span><span class="name">luci-i18n-netdata-zh-cn</span><span class="desc">Netdata</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-statistics-zh-cn"><span><span class="name">luci-i18n-statistics-zh-cn</span><span class="desc">Statistics</span></span></label>
+      <label><input type="checkbox" value="luci-i18n-argon-config-zh-cn"><span><span class="name">luci-i18n-argon-config-zh-cn</span><span class="desc">Argon 配置</span></span></label>
     </div>
   </div>
 
   <!-- 自定义包 -->
   <div class="category">
-    <h3>自定义包（空格分隔）</h3>
-    <textarea id="custom-add" placeholder="例：luci-app-aria2 htop screen"></textarea>
+    <div class="category-head">
+      <h3>自定义包</h3>
+      <span style="font-size:12px;color:var(--muted)">空格分隔,例:<code>luci-app-aria2 nano</code></span>
+    </div>
+    <textarea id="custom-add" placeholder="luci-app-aria2 htop screen"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-secondary" id="save-form">💾 保存设置</button>
+    <button class="btn btn-secondary" id="reset-form">↩️ 重置全部</button>
+    <span style="font-size:12px;color:var(--muted);align-self:center" id="save-status"></span>
   </div>
 </div>
 
 <!-- ============ 步骤 4: 移除 ============ -->
-<div class="card">
+<div class="card" id="step-4">
   <h2><span class="step">4</span> 移除 <strong style="color:var(--danger)">默认</strong>包</h2>
-  <p class="help">从默认 <code>config/default.config</code> 里禁用某些包。空格分隔。</p>
-  <textarea id="custom-remove" placeholder="例：luci-theme-aurora hiddify-core"></textarea>
+  <p class="help">从默认 <code>config/default.config</code> 里禁用某些包(空格分隔)。常用: <code>luci-theme-aurora</code>。</p>
+  <textarea id="custom-remove" placeholder="luci-theme-aurora luci-app-passwall2"></textarea>
 </div>
 
 <!-- ============ 步骤 5: Release 选项 ============ -->
-<div class="card">
+<div class="card" id="step-5">
   <h2><span class="step">5</span> Release 选项</h2>
   <div class="row">
     <div>
@@ -344,46 +476,108 @@ footer { text-align: center; padding: 20px; color: var(--muted); font-size: 12px
   </div>
 </div>
 
-<!-- ============ 触发 ============ -->
-<div class="card">
+<!-- ============ 步骤 6: 触发 ============ -->
+<div class="card" id="step-6">
   <h2><span class="step">✓</span> 触发构建</h2>
-  <p class="help">点击后调用 <code>POST /repos/.../actions/workflows/build.yml/dispatches</code>。</p>
+  <p class="help">点击后调用 <code>POST /repos/.../actions/workflows/build.yml/dispatches</code>,完成后自动轮询最新 run。</p>
   <div class="summary-box" id="summary">未选择任何额外包</div>
   <div class="actions">
     <button class="btn" id="trigger-btn" disabled>🚀 开始构建</button>
-    <button class="btn btn-secondary" id="check-btn" disabled>查看最近 run</button>
+    <button class="btn btn-secondary" id="check-btn" disabled>🔄 查看最新 run</button>
+    <button class="btn btn-secondary" id="cancel-poll-btn" style="display:none">⏹ 停止轮询</button>
   </div>
   <div id="status" class="status"></div>
 </div>
 
+<!-- ============ 步骤 7: 历史 releases ============ -->
+<div class="card" id="step-7">
+  <h2><span class="step">📜</span> 最近 Release</h2>
+  <p class="help">从 <code>GET /repos/{owner}/{repo}/releases?per_page=5</code> 拉取最近 5 个发布版本。</p>
+  <div class="actions">
+    <button class="btn btn-secondary" id="refresh-releases-btn" disabled>🔄 刷新</button>
+    <span id="releases-status" style="font-size:13px;color:var(--muted);align-self:center"></span>
+  </div>
+  <div id="releases" class="releases"></div>
+</div>
+
 <footer>
   <a href="https://github.com/r3zound/openwrt-v50-builder" target="_blank">r3zound/openwrt-v50-builder</a> ·
-  本页面仅在你的浏览器内运行，Token 永不上传。
+  本页面仅在你的浏览器内运行,Token 永不上传。
 </footer>
 
 </div>
 
 <script>
 const $ = (id) => document.getElementById(id);
+const LS_KEY = 'v50-builder-form-v2';
 
-// === Token 管理 ===
+// ============== 表单持久化 ==============
+const FORM_FIELDS = [
+  'pat', 'repo-owner', 'repo-name', 'workflow-file',
+  'custom-add', 'custom-remove', 'release-tag', 'owrt-version', 'prerelease',
+];
+const CHECKBOX_SELECTORS = [
+  '.pkg-grid input[type=checkbox]:not(:disabled)',
+];
+
+function saveForm() {
+  const obj = {};
+  FORM_FIELDS.forEach(id => { const el = $(id); if (el) obj[id] = el.value; });
+  obj.checkboxes = getChecked();
+  localStorage.setItem(LS_KEY, JSON.stringify(obj));
+  $('save-status').textContent = '✓ 已保存到 localStorage';
+  setTimeout(() => { $('save-status').textContent = ''; }, 2500);
+}
+
+function restoreForm() {
+  let obj;
+  try { obj = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch { return; }
+  if (!obj) return;
+  FORM_FIELDS.forEach(id => { if (obj[id] !== undefined && $(id)) $(id).value = obj[id]; });
+  if (Array.isArray(obj.checkboxes)) {
+    const wanted = new Set(obj.checkboxes);
+    document.querySelectorAll(CHECKBOX_SELECTORS.join(',')).forEach(c => {
+      if (wanted.has(c.value)) c.checked = true;
+    });
+  }
+}
+
+function resetForm() {
+  if (!confirm('确定要清空所有选项吗?(会保留 PAT 和仓库配置)')) return;
+  // 清空 checkbox 选项
+  document.querySelectorAll(CHECKBOX_SELECTORS.join(',')).forEach(c => {
+    if (!c.disabled) c.checked = false;
+  });
+  // 清空 textarea
+  ['custom-add', 'custom-remove', 'release-tag'].forEach(id => $(id).value = '');
+  $('owrt-version').value = 'v25.12.5';
+  $('prerelease').value = 'true';
+  saveForm();
+  updateSummary();
+  $('save-status').textContent = '✓ 已重置';
+  setTimeout(() => { $('save-status').textContent = ''; }, 2500);
+}
+
+// ============== Token 管理 ==============
 function loadPat() {
-  const pat = localStorage.getItem('v50-pat') || '';
-  $('pat').value = pat;
+  const pat = $('pat').value.trim();
   $('pat-status').textContent = pat ? '✓ 已保存' : '';
+  $('trigger-btn').disabled = !pat;
+  $('check-btn').disabled = !pat;
+  $('test-pat').disabled = !pat;
+  $('refresh-releases-btn').disabled = !pat;
   return !!pat;
 }
 function savePat() {
   const pat = $('pat').value.trim();
   if (!pat.startsWith('ghp_') && !pat.startsWith('github_pat_')) {
-    showStatus('Token 格式不对（应以 ghp_ 或 github_pat_ 开头）', 'error');
+    showStatus('Token 格式不对(应以 ghp_ 或 github_pat_ 开头)', 'error');
     return;
   }
   localStorage.setItem('v50-pat', pat);
   $('pat-status').textContent = '✓ 已保存到 localStorage';
   showStatus('Token 已保存。下次打开页面会自动填入。', 'success');
-  $('trigger-btn').disabled = false;
-  $('check-btn').disabled = false;
+  loadPat();
 }
 function clearPat() {
   localStorage.removeItem('v50-pat');
@@ -391,17 +585,33 @@ function clearPat() {
   $('pat-status').textContent = '';
   $('trigger-btn').disabled = true;
   $('check-btn').disabled = true;
+  $('test-pat').disabled = true;
+  $('refresh-releases-btn').disabled = true;
   showStatus('Token 已清除。', 'info');
 }
-$('save-pat').onclick = savePat;
-$('clear-pat').onclick = clearPat;
-$('pat').onkeydown = (e) => { if (e.key === 'Enter') savePat(); };
+async function testPat() {
+  const pat = $('pat').value.trim();
+  if (!pat) return;
+  showStatus('测试 PAT 连接...', 'info');
+  try {
+    const r = await fetch('https://api.github.com/user', {
+      headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json' },
+    });
+    if (r.ok) {
+      const d = await r.json();
+      showStatus(`<strong>✓ 连接成功</strong> · 用户 ${escapeHtml(d.login)} · ${escapeHtml(d.name || '(无姓名)')}`, 'success');
+    } else {
+      showStatus(`<strong>连接失败</strong>: HTTP ${r.status}`, 'error');
+    }
+  } catch (e) {
+    showStatus('测试错误: ' + e.message, 'error');
+  }
+}
 
-// === 收集已勾选包 ===
+// ============== 收集已勾选包 ==============
 function getChecked() {
   const checked = [];
-  document.querySelectorAll('.pkg-grid input[type=checkbox]:not(:disabled):checked')
-    .forEach(c => checked.push(c.value));
+  document.querySelectorAll(CHECKBOX_SELECTORS.join(',') + ':checked').forEach(c => checked.push(c.value));
   const custom = $('custom-add').value.trim();
   if (custom) custom.split(/\s+/).filter(Boolean).forEach(p => {
     if (!checked.includes(p)) checked.push(p);
@@ -412,31 +622,46 @@ function getRemoved() {
   return $('custom-remove').value.trim().split(/\s+/).filter(Boolean);
 }
 
-// === 更新摘要 ===
+// ============== 摘要 ==============
 function updateSummary() {
   const added = getChecked();
   const removed = getRemoved();
   let s = `+ ${added.length} 个添加  ·  - ${removed.length} 个移除`;
   if (added.length) s += '\n  添加: ' + added.join(' ');
   if (removed.length) s += '\n  移除: ' + removed.join(' ');
-  $('summary').textContent = s || '无变更（直接编译默认 config）';
-  $('trigger-btn').disabled = !loadPat();
+  $('summary').textContent = s || '无变更(直接编译默认 config)';
 }
-document.querySelectorAll('input[type=checkbox], textarea').forEach(el => {
-  el.addEventListener('change', updateSummary);
-  el.addEventListener('input', updateSummary);
+
+// ============== 全选/全不选 ==============
+document.querySelectorAll('.btn-mini').forEach(b => {
+  b.onclick = () => {
+    const cat = b.dataset.cat, act = b.dataset.act;
+    const map = {
+      proxy: '.category:nth-of-type(1) .pkg-grid',
+      apps: '.category:nth-of-type(2) .pkg-grid',
+      themes: '.category:nth-of-type(3) .pkg-grid',
+      utils: '.category:nth-of-type(4) .pkg-grid',
+      i18n: '.category:nth-of-type(5) .pkg-grid',
+    };
+    const sel = map[cat];
+    if (!sel) return;
+    const checked = act === 'all';
+    document.querySelectorAll(`${sel} input[type=checkbox]:not(:disabled)`).forEach(c => c.checked = checked);
+    updateSummary();
+    saveForm();
+  };
 });
 
-// === 显示状态 ===
+// ============== 显示状态 ==============
 function showStatus(msg, kind, html) {
   const s = $('status');
   s.className = `status show ${kind}`;
   s.innerHTML = html || msg;
 }
 
-// === 触发构建 ===
+// ============== 触发构建 ==============
 async function triggerBuild() {
-  const pat = localStorage.getItem('v50-pat');
+  const pat = $('pat').value.trim();
   if (!pat) return showStatus('请先填入并保存 GitHub PAT', 'error');
   const owner = $('repo-owner').value.trim();
   const name = $('repo-name').value.trim();
@@ -446,11 +671,9 @@ async function triggerBuild() {
   $('trigger-btn').disabled = true;
   showStatus('正在触发 GitHub Actions...', 'info');
 
-  const added = getChecked();
-  const removed = getRemoved();
   const inputs = {
-    add_packages: added.join(' '),
-    remove_packages: removed.join(' '),
+    add_packages: getChecked().join(' '),
+    remove_packages: getRemoved().join(' '),
     release_tag: $('release-tag').value.trim(),
     openwrt_version: $('owrt-version').value.trim() || 'v25.12.5',
     prerelease: $('prerelease').value,
@@ -469,17 +692,12 @@ async function triggerBuild() {
       body: JSON.stringify({ ref: 'main', inputs }),
     });
     if (resp.status === 204) {
-      showStatus(
-        `<strong>✓ 已触发</strong> — 等待 GitHub 调度。`,
-        'success'
-      );
-      // 立即拉一次 run 列表拿到最新的 run id
-      setTimeout(checkLatestRun, 5000);
+      showStatus(`<strong>✓ 已触发</strong> — 等待 GitHub 调度...`, 'success');
+      setTimeout(() => startPolling(), 3000);
     } else {
       const body = await resp.text();
       showStatus(
-        `<strong>触发失败</strong>: HTTP ${resp.status}<br>` +
-        `<pre style="white-space:pre-wrap;font-size:11px">${escapeHtml(body)}</pre>`,
+        `<strong>触发失败</strong>: HTTP ${resp.status}<br><pre>${escapeHtml(body)}</pre>`,
         'error'
       );
     }
@@ -490,13 +708,31 @@ async function triggerBuild() {
   }
 }
 
-async function checkLatestRun() {
-  const pat = localStorage.getItem('v50-pat');
+// ============== 轮询 run 状态 ==============
+let pollTimer = null;
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  $('cancel-poll-btn').style.display = '';
+  const tick = async () => {
+    const ok = await checkLatestRun(false);
+      if (ok === 'done') stopPolling();
+  };
+  tick();
+  pollTimer = setInterval(tick, 15000); // 15s 一次
+}
+function stopPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = null;
+  $('cancel-poll-btn').style.display = 'none';
+}
+
+async function checkLatestRun(verbose = true) {
+  const pat = $('pat').value.trim();
   const owner = $('repo-owner').value.trim();
   const name = $('repo-name').value.trim();
   const wf = $('workflow-file').value.trim();
   if (!pat) return;
-  showStatus('正在查询最新 run 状态...', 'info');
+  if (verbose) showStatus('正在查询最新 run 状态...', 'info');
   try {
     const url = `https://api.github.com/repos/${owner}/${name}/actions/workflows/${wf}/runs?per_page=1`;
     const r = await fetch(url, {
@@ -506,45 +742,129 @@ async function checkLatestRun() {
       },
     });
     if (!r.ok) {
-      showStatus(`查询失败: HTTP ${r.status}`, 'error');
-      return;
+      if (verbose) showStatus(`查询失败: HTTP ${r.status}`, 'error');
+      return 'error';
     }
     const d = await r.json();
     const run = d.workflow_runs && d.workflow_runs[0];
     if (!run) {
-      showStatus('未找到 run', 'info');
-      return;
+      if (verbose) showStatus('未找到 run', 'info');
+      return 'empty';
     }
     const status = run.status;       // queued / in_progress / completed
     const conclusion = run.conclusion; // success / failure / cancelled / null
-    const badge = run.status === 'completed' ?
-      (conclusion === 'success' ? '✓ 成功' : '✗ ' + conclusion) :
-      '⟳ ' + status;
+    const badge = run.status === 'completed'
+      ? (conclusion === 'success' ? '✓ 成功' : '✗ ' + conclusion)
+      : '⟳ ' + status;
+    const kind = conclusion === 'success' ? 'success'
+      : conclusion === 'failure' ? 'error' : 'info';
     showStatus(
       `<strong>${badge}</strong> — ${escapeHtml(run.display_title)}<br>` +
       `  分支: <code>${escapeHtml(run.head_branch)}</code><br>` +
       `  触发者: ${escapeHtml(run.actor.login)} · ${escapeHtml(new Date(run.created_at).toLocaleString())}<br>` +
-      `<a href="${run.html_url}" target="_blank">在 GitHub Actions 中打开 →</a>`,
-      conclusion === 'success' ? 'success' :
-      conclusion === 'failure' ? 'error' : 'info'
+      `  <a href="${run.html_url}" target="_blank">在 GitHub Actions 中打开 →</a>` +
+      (run.status === 'completed' && conclusion === 'success'
+        ? `<br>  <a href="https://github.com/${owner}/${name}/releases" target="_blank">查看 Release 下载 →</a>`
+        : ''),
+      kind
     );
+    return run.status === 'completed' ? 'done' : 'pending';
   } catch (e) {
-    showStatus('查询错误: ' + e.message, 'error');
+    if (verbose) showStatus('查询错误: ' + e.message, 'error');
+    return 'error';
   }
 }
 
+// ============== Releases 历史 ==============
+async function fetchReleases() {
+  const pat = $('pat').value.trim();
+  const owner = $('repo-owner').value.trim();
+  const name = $('repo-name').value.trim();
+  if (!pat) return;
+  $('releases-status').textContent = '加载中...';
+  $('refresh-releases-btn').disabled = true;
+  try {
+    const url = `https://api.github.com/repos/${owner}/${name}/releases?per_page=5`;
+    const r = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json' },
+    });
+    if (!r.ok) {
+      $('releases-status').textContent = `HTTP ${r.status}`;
+      return;
+    }
+    const list = await r.json();
+    if (!list.length) {
+      $('releases-status').textContent = '尚无 release';
+      $('releases').innerHTML = '<div style="font-size:13px;color:var(--muted)">还没有任何发布版本。</div>';
+      return;
+    }
+    $('releases-status').textContent = `共 ${list.length} 个`;
+    $('releases').innerHTML = list.map(rel => {
+      const date = new Date(rel.published_at).toLocaleString();
+      const preClass = rel.prerelease ? 'pre' : '';
+      const tag = escapeHtml(rel.tag_name);
+      const name = escapeHtml(rel.name || rel.tag_name);
+      const files = (rel.assets || []).map(a =>
+        `<a href="${a.browser_download_url}" target="_blank">${escapeHtml(a.name)}</a> (${(a.size / 1024 / 1024).toFixed(1)}MB)`
+      ).join(' · ');
+      return `
+        <div class="release-item">
+          <div class="tag-row">
+            <span class="tag-name ${preClass}">${tag}</span>
+            ${rel.prerelease ? '<span class="tag" style="background:var(--warning)">预发布</span>' : ''}
+            <span class="meta">${date}</span>
+            <a class="meta" href="${rel.html_url}" target="_blank">→ 查看</a>
+          </div>
+          ${name !== tag ? `<div class="meta">${name}</div>` : ''}
+          <div class="files">${files || '<span style="color:var(--muted)">无附件</span>'}</div>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    $('releases-status').textContent = '错误: ' + e.message;
+  } finally {
+    $('refresh-releases-btn').disabled = false;
+  }
+}
+
+// ============== 工具函数 ==============
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// ============== 事件绑定 ==============
+$('save-pat').onclick = savePat;
+$('clear-pat').onclick = clearPat;
+$('test-pat').onclick = testPat;
+$('pat').onkeydown = (e) => { if (e.key === 'Enter') savePat(); };
 $('trigger-btn').onclick = triggerBuild;
-$('check-btn').onclick = checkLatestRun;
+$('check-btn').onclick = () => checkLatestRun(true);
+$('cancel-poll-btn').onclick = stopPolling;
+$('refresh-releases-btn').onclick = fetchReleases;
+$('save-form').onclick = saveForm;
+$('reset-form').onclick = resetForm;
+document.querySelectorAll('input[type=checkbox], textarea, select').forEach(el => {
+  el.addEventListener('change', updateSummary);
+  el.addEventListener('input', updateSummary);
+});
 
-// === 初始化 ===
-loadPat();
-$('trigger-btn').disabled = !loadPat();
-$('check-btn').disabled = !loadPat();
-updateSummary();
+// ============== 初始化 ==============
+function init() {
+  // 1. 恢复 PAT
+  const pat = localStorage.getItem('v50-pat') || '';
+  $('pat').value = pat;
+  // 2. 恢复表单
+  restoreForm();
+  // 3. 如果 PAT 恢复了但 form 状态覆盖不到,再 patch
+  if (pat && !$('pat').value) $('pat').value = pat;
+  // 4. 更新按钮状态
+  loadPat();
+  // 5. 更新摘要
+  updateSummary();
+  // 6. 自动加载 release 列表(需要 PAT)
+  if (pat) fetchReleases();
+}
+
+init();
 </script>
 
 </body>

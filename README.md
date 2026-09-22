@@ -70,8 +70,19 @@
 
 打开 [`docs/builder.html`](docs/builder.html)（推荐 GitHub Pages 启用后从 `https://r3zound.github.io/openwrt-v50-builder/builder.html` 访问）：
 
+**功能概览**：
+
+- **5 大分类 · 78 个常用包**：代理（PassWall2/Nikki/OpenClash/HomeProxy/SSR-Plus/Mihomo/Momo/v2rayA/Fchomo/NeKoBox/Daed/HiJpass/UA3F/luci-xray）/ LuCI 应用（27 项）/ 主题（12 项）/ 系统工具（htop/btop/tmux/iperf3 等）/ 中文 i18n（25 项）
+- **每分类全选/全不选** 一键操作
+- **表单自动持久化**（localStorage）—— 刷新页面不丢选项
+- **触发后实时轮询** —— 每 15 秒检查 run 状态，完成自动跳到 release 下载
+- **最近 5 个 Releases 列表** —— 自动从 GitHub API 拉取，含下载链接
+
+**使用流程**：
+
 1. 填入一个 **GitHub PAT**（`repo` scope，[一键创建](https://github.com/settings/tokens/new?scopes=repo&description=V50+Builder) →）
-3. 勾选要添加的插件（luci-app-* / luci-theme-* / 中文包，约 60 个常用项 + 自定义 textarea）
+2. 勾选要添加的插件（按分类、可全选、可用自定义 textarea 追加任意包名）
+3. 点击 **💾 保存设置**（可选，会自动保存到 localStorage）
 4. 点击 **🚀 开始构建**
 
 页面直接调用 `POST /repos/{owner}/{repo}/actions/workflows/build.yml/dispatches`，**无需后端**。Token 仅存在你的浏览器 `localStorage` 里，**永不上传**。
@@ -93,7 +104,9 @@
 ├── README.md               # 本文件 / this file
 ├── AGENTS.md               # AI 协作规则
 ├── LICENSE                 # MIT 许可证
-├── docs/                  # 长期文档（中文为主）
+├── docs/                  # 长期文档（中文为主）+ GitHub Pages 源
+│   ├── index.html         #  Pages 落地页（指向 builder.html）
+│   ├── builder.html       # 图形化固件定制页（纯前端）
 │   ├── SKILL.md           # 构建 skill 完整说明
 │   ├── OpenWrt固件构建指南.md
 │   └── OpenWrt固件构建教程_脱敏版.md
